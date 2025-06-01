@@ -1,0 +1,932 @@
+fileFormatVersion: 2
+guid: 7397e0565a104c94aa14fa32dc9ef2d9
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Dummy_Numbers_0
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 407.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af250d9a684688347bc34b6afe82bbf3
+      internalID: 1299688088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_1
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 407.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 582c19315371f5342b57d416976d3cf7
+      internalID: -1664374233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_2
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 407.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbc2e62834f1f5049864051cce90d47f
+      internalID: 29717385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_3
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 407.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a6ab521984635b43ad7a08ea70fdc98
+      internalID: -994773255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_4
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 407.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b9fd3eb8e38f774693899cba5ce3b33
+      internalID: 860312315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_5
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 407.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48fa334a22e71f34a86220097fb7393e
+      internalID: -565076493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_6
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 328.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a7dbe5680ec02a45a25554c43117271
+      internalID: 559916696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_7
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 328.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52d8c322b9ea61246bcb1c8e429c29fb
+      internalID: 1461502992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_8
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 328.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eba9ad853ea65b04d911200655709f69
+      internalID: 882762425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_9
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 328.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43b044197c4a20b4ba6dc44daa645d62
+      internalID: -888882026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_10
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 328.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e894ff3a7558f14e91dabf21d8fd9a2
+      internalID: -2026258621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_11
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 328.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e358eee1ac73a94c85fa94f3a617671
+      internalID: -1452305485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_12
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 249.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7bf511cb2ff674429d23825b59495d4
+      internalID: -1161690930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_13
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 249.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c34d004d4d447543960a9f572d511f3
+      internalID: -1243172179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_14
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 249.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 296015ad3fbcf9146b8ec637c77fac8f
+      internalID: -1619944533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_15
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 249.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 157c5d92e0e853c4fb209ecda7d1deb6
+      internalID: 843942866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_16
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 249.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64e138c20df093a49ab309328a18ac60
+      internalID: -452835189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_17
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 249.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81227ba7361e0ab4e9da2573aa1be2f3
+      internalID: 70451111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_18
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 170.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2344444a2ffdfa24c858ac7a37e9f6b6
+      internalID: 1864825079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_19
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 170.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3228c1c125baed24face2b70107560da
+      internalID: -1545330649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_20
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 170.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4cb33db9f00b904fb58b988a164926f
+      internalID: 401766748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_21
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 170.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e44f799e7579bb646be2b02f4fbb5ed8
+      internalID: 657189931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_22
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 170.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40c1ad945ae30d641a52f6d4ed8b7c29
+      internalID: 268025234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_23
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 170.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cea2d9a8868046749962babbc09d3651
+      internalID: -63470603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_24
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 91.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5eb5c20a5a763b499e89f6a6ccfa350
+      internalID: -711031369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_25
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 91.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9d95ee8f744da34a9873b7e331674b5
+      internalID: 84449028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_26
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 91.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86caed34f94db004fa12f646a12cc1a3
+      internalID: -271190802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_27
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 91.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 264403acbacb6b645bb02d3b4a794f61
+      internalID: 1860088492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_28
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 91.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7b858381fd8c694abbc145cabd10b71
+      internalID: 84525927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_29
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 91.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4017cf9090dfb9c46b744aba2893fb66
+      internalID: -1760553375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_30
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 12.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f85a1343961b032468592ab483a1eee6
+      internalID: -875622164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_31
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 12.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2244a42ebbe2ced44a44fb233ac3fb4a
+      internalID: -1567100362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_32
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 12.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e854eb50e7c106547b5e5666c2562843
+      internalID: -1825484737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_33
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 12.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf021e77ea99ef3458dc08fb20d72736
+      internalID: -709998470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_34
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 12.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cdef5045ca31abc4b815a026f1304209
+      internalID: -217012464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dummy_Numbers_35
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 12.5
+        width: 80.833336
+        height: 69.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb5a86eef1545264891fd4e7b3545201
+      internalID: -916087133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 79d19bfe46b48aa4ba052d4af8a3bf98
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Dummy_Numbers_0: 1299688088
+      Dummy_Numbers_1: -1664374233
+      Dummy_Numbers_10: -2026258621
+      Dummy_Numbers_11: -1452305485
+      Dummy_Numbers_12: -1161690930
+      Dummy_Numbers_13: -1243172179
+      Dummy_Numbers_14: -1619944533
+      Dummy_Numbers_15: 843942866
+      Dummy_Numbers_16: -452835189
+      Dummy_Numbers_17: 70451111
+      Dummy_Numbers_18: 1864825079
+      Dummy_Numbers_19: -1545330649
+      Dummy_Numbers_2: 29717385
+      Dummy_Numbers_20: 401766748
+      Dummy_Numbers_21: 657189931
+      Dummy_Numbers_22: 268025234
+      Dummy_Numbers_23: -63470603
+      Dummy_Numbers_24: -711031369
+      Dummy_Numbers_25: 84449028
+      Dummy_Numbers_26: -271190802
+      Dummy_Numbers_27: 1860088492
+      Dummy_Numbers_28: 84525927
+      Dummy_Numbers_29: -1760553375
+      Dummy_Numbers_3: -994773255
+      Dummy_Numbers_30: -875622164
+      Dummy_Numbers_31: -1567100362
+      Dummy_Numbers_32: -1825484737
+      Dummy_Numbers_33: -709998470
+      Dummy_Numbers_34: -217012464
+      Dummy_Numbers_35: -916087133
+      Dummy_Numbers_4: 860312315
+      Dummy_Numbers_5: -565076493
+      Dummy_Numbers_6: 559916696
+      Dummy_Numbers_7: 1461502992
+      Dummy_Numbers_8: 882762425
+      Dummy_Numbers_9: -888882026
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

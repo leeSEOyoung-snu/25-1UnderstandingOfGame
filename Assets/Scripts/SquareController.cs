@@ -12,11 +12,17 @@ public class SquareController : MonoBehaviour
     [SerializeField] private SpriteRenderer colorBottomSprite;
     
     [Header("Values")]
+    [SerializeField] private float moveAnimationPosZ;
     [SerializeField] private float openAnimationDuration, colorChangeDuration;
+    [SerializeField] private float moveAnimationDuration, moveZAxisAnimationDuration;
     
     private Vector3 _openedRot = new Vector3(0, 180, 0);
 
     private Color[] _playerColors = new Color[2];
+    
+    private bool _isMoving;
+    
+    private Sequence _movingSequence;
 
     public enum SquareStateType
     {
@@ -33,13 +39,15 @@ public class SquareController : MonoBehaviour
     public bool IsReadyToReserve { get; private set; }
     public SquareStateType State { get; private set; }
 
-    public void Init(int id, Sprite number, Color kingColor, Color queenColor)
+    public void Init(int id, Sprite number, Color kingColor, Color queenColor, Vector3 initPos)
     {
         Id = id;
         IsOpened = false;
         IsReadyToReserve = false;
+        _isMoving = false;
         transform.rotation = Quaternion.identity;
         State = SquareStateType.Empty;
+        transform.position = initPos;
         numberSprite.sprite = number;
         _playerColors[0] = kingColor;
         _playerColors[1] = queenColor;
@@ -50,8 +58,8 @@ public class SquareController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (IsOpened) return;
-        MainSceneManager.Instance.SquareSelected(Id);
+        if (IsOpened || _isMoving) return;
+        MainSceneManager.Instance.SquareSelected(this);
     }
 
     public void ToggleReadyToReserve(int player)
@@ -114,7 +122,10 @@ public class SquareController : MonoBehaviour
 
     public void Open(int player)
     {
-        Sequence openSequence = DOTween.Sequence();
+        _isMoving = true;
+        if (_movingSequence != null &&_movingSequence.IsActive())
+            _movingSequence.Kill();
+        _movingSequence = DOTween.Sequence();
         
         IsOpened = true;
 
@@ -122,7 +133,7 @@ public class SquareController : MonoBehaviour
         {
             case SquareStateType.Empty:
                 State = player == 0 ? SquareStateType.KingOccupied : SquareStateType.QueenOccupied;
-                openSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
+                _movingSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
                     .Join(colorBottomSprite.DOColor(_playerColors[player], colorChangeDuration));
                 break;
             
@@ -137,7 +148,7 @@ public class SquareController : MonoBehaviour
             case SquareStateType.BothReserved:
                 State = player == 0 ? SquareStateType.QueenOccupied : SquareStateType.KingOccupied;
                 int occupier = Mathf.Abs(player - 1);
-                openSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
+                _movingSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
                     .Join(colorBottomSprite.DOColor(_playerColors[occupier], colorChangeDuration));
                 break;
             
@@ -146,7 +157,29 @@ public class SquareController : MonoBehaviour
                 return;
         }
         
-        openSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
-        openSequence.Play();
+        _movingSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
+        _movingSequence.Play().OnComplete(()=>_isMoving=false);
+    }
+
+    public void Push(bool isLastOne, Vector3 newPos)
+    {
+        if (_movingSequence != null &&_movingSequence.IsActive())
+            _movingSequence.Kill();
+        _movingSequence = DOTween.Sequence();
+
+        if (isLastOne)
+        {
+            Vector3 milestone0 = new Vector3(transform.position.x, transform.position.y, moveAnimationPosZ);
+            Vector3 milestone1 = new Vector3(newPos.x, newPos.y, moveAnimationPosZ);
+            _movingSequence.Append(transform.DOMove(milestone0, moveZAxisAnimationDuration));
+            _movingSequence.Append(transform.DOMove(milestone1, moveAnimationDuration));
+            _movingSequence.Append(transform.DOMove(newPos, moveZAxisAnimationDuration));
+        }
+        else
+        {
+            _movingSequence.Append(transform.DOMove(newPos, moveAnimationDuration));
+        }
+        
+        _movingSequence.Play().OnComplete(()=>_isMoving=false);
     }
 }

@@ -415,8 +415,11 @@ MonoBehaviour:
   numberSprite: {fileID: 2732520885614049883}
   colorTopSprite: {fileID: 2716344176456136568}
   colorBottomSprite: {fileID: 4160962139149595366}
+  moveAnimationPosZ: -0.5
   openAnimationDuration: 1
   colorChangeDuration: 1
+  moveAnimationDuration: 1.5
+  moveZAxisAnimationDuration: 0.5
 --- !u!65 &7368151545698936076
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ public class MainSceneManager : MonoBehaviour
     [Header("References")] 
     [SerializeField] private Transform[] columns;
     [SerializeField] private GameObject kingReserveBtn, queenReserveBtn;
+    [SerializeField] private GameObject pushColumnDownParent, pushColumnUpParent, pushRowDownParent, pushRowUpParent;
     
     [Header("Values")] 
     [SerializeField] private int reservedSquareCnt;
@@ -18,6 +19,7 @@ public class MainSceneManager : MonoBehaviour
     private int _squareLength;
     private int _readyToReserveCnt;
     private Sprite[] _numberSprites;
+    private float _squareHalfSize;
 
     private enum PlayerType
     {
@@ -56,21 +58,25 @@ public class MainSceneManager : MonoBehaviour
         _currState = GameStateType.Reserve;
         _numberSprites = Resources.LoadAll<Sprite>("Numbers");
         
-        // 각각의 square 초기화
+        // square controller 및 square 위치 초기화
         _squareControllerDict = new Dictionary<int, Dictionary<int, SquareController>>();
         _squareLength = columns.Length;
+        _squareHalfSize = columns[0].GetChild(0).transform.localScale.x / 2;
         
         for (int x = 0; x < _squareLength; x++)
         {
             _squareControllerDict.Add(x, new Dictionary<int, SquareController>());
+            SquareController[] squaresControllers = columns[x].GetComponentsInChildren<SquareController>();
             
             for (int y = 0; y < _squareLength; y++)
             {
                 int id = x * columns.Length + y;
                 
-                SquareController controller = columns[x].GetChild(y).gameObject.GetComponent<SquareController>();
-                controller.Init(id, _numberSprites[id], kingColor, queenColor);
-                _squareControllerDict[x].Add(y, controller);
+                float initPosX = ((float)_squareLength*-1 + 2*x + 1) * _squareHalfSize;
+                float initPosY = ((float)_squareLength - 2*y - 1) * _squareHalfSize;
+                Vector3 initPos = new Vector3(initPosX, initPosY, 0);
+                squaresControllers[y].Init(id, _numberSprites[id], kingColor, queenColor, initPos);
+                _squareControllerDict[x].Add(y, squaresControllers[y]);
             }
         }
         
@@ -78,6 +84,28 @@ public class MainSceneManager : MonoBehaviour
         _readyToReserveCnt = 0;
         kingReserveBtn.gameObject.SetActive(true);
         queenReserveBtn.gameObject.SetActive(false);
+        
+        // Push 초기화
+        pushColumnDownParent.SetActive(false);
+        pushColumnUpParent.SetActive(false);
+        pushRowDownParent.SetActive(false);
+        pushRowUpParent.SetActive(false);
+        
+        PushBtnBehaviour[] pushBtnsBehaviours = pushColumnDownParent.GetComponentsInChildren<PushBtnBehaviour>();
+        for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+            pushBtnsBehaviours[i].Init(0, i);
+        
+        pushBtnsBehaviours = pushColumnUpParent.GetComponentsInChildren<PushBtnBehaviour>();
+        for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+            pushBtnsBehaviours[i].Init(1, i);
+        
+        pushBtnsBehaviours = pushRowDownParent.GetComponentsInChildren<PushBtnBehaviour>();
+        for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+            pushBtnsBehaviours[i].Init(2, i);
+        
+        pushBtnsBehaviours = pushRowUpParent.GetComponentsInChildren<PushBtnBehaviour>();
+        for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+            pushBtnsBehaviours[i].Init(3, i);
     }
 
     public void RunGame()
@@ -89,7 +117,9 @@ public class MainSceneManager : MonoBehaviour
                 break;
             
             case GameStateType.Playing:
-                
+                bool isGameEnded = CheckWinner();
+                if (isGameEnded) EndGame();
+                else _currTurn = _currTurn == PlayerType.King ? PlayerType.Queen : PlayerType.King;
                 break;
         }
     }
@@ -120,18 +150,11 @@ public class MainSceneManager : MonoBehaviour
             _currState = GameStateType.Playing;
             kingReserveBtn.gameObject.SetActive(false);
             queenReserveBtn.gameObject.SetActive(false);
-        }
-    }
-
-    private void NextTurn()
-    {
-        if (_currTurn == PlayerType.King)
-        {
-            _currTurn = PlayerType.Queen;
-        }
-        else if (_currTurn == PlayerType.Queen)
-        {
-            _currTurn = PlayerType.King;
+            
+            pushColumnDownParent.SetActive(true);
+            pushColumnUpParent.SetActive(true);
+            pushRowDownParent.SetActive(true);
+            pushRowUpParent.SetActive(true);
         }
     }
 
@@ -145,10 +168,8 @@ public class MainSceneManager : MonoBehaviour
         
     }
 
-    public void SquareSelected(int id)
+    public void SquareSelected(SquareController squareController)
     {
-        SquareController squareController = _squareControllerDict[id / _squareLength][id % _squareLength];
-        
         switch (_currState)
         {
             case GameStateType.Reserve:
@@ -161,10 +182,74 @@ public class MainSceneManager : MonoBehaviour
             
             case GameStateType.Playing:
                 squareController.Open(_currTurn == PlayerType.King ? 0 : 1);
-                bool isGameEnded = CheckWinner();
-                if (isGameEnded) EndGame();
-                else NextTurn();
+                RunGame();
                 break;
         }
+    }
+
+    public void Push(int pushDirection, int id)
+    {
+        SquareController tmp;
+        Vector3 newPos;
+        switch(pushDirection) 
+        {
+            case 0: // Column Down
+                tmp = _squareControllerDict[id][0];
+                newPos = new Vector3(((float)_squareLength * -1 + 2 * id + 1) * _squareHalfSize, 0, 0);
+                for (int y = 0; y < _squareLength-1; y++)
+                {
+                    newPos.y = ((float)_squareLength - 2 * y - 1) * _squareHalfSize;
+                    _squareControllerDict[id][y+1].Push(false, newPos);
+                    _squareControllerDict[id][y] = _squareControllerDict[id][y+1];
+                }
+                newPos.y = ((float)_squareLength * -1 + 1) * _squareHalfSize;
+                tmp.Push(true, newPos);
+                _squareControllerDict[id][_squareLength - 1] = tmp;
+                break;
+            
+            case 1: // Column Up
+                tmp = _squareControllerDict[id][_squareLength - 1];
+                newPos = new Vector3(((float)_squareLength * -1 + 2 * id + 1) * _squareHalfSize, 0, 0);
+                for (int y = _squareLength - 1; y > 0; y--)
+                {
+                    newPos.y = ((float)_squareLength - 2 * y - 1) * _squareHalfSize;
+                    _squareControllerDict[id][y - 1].Push(false, newPos);
+                    _squareControllerDict[id][y] = _squareControllerDict[id][y - 1];
+                }
+                newPos.y = ((float)_squareLength - 1) * _squareHalfSize;
+                tmp.Push(true, newPos);
+                _squareControllerDict[id][0] = tmp;
+                break;
+            
+            case 2: // Row Down
+                tmp = _squareControllerDict[0][id];
+                newPos = new Vector3(0, ((float)_squareLength - 2 * id - 1) * _squareHalfSize, 0);
+                for (int x = 0; x < _squareLength-1; x++)
+                {
+                    newPos.x = ((float)_squareLength * -1 + 2 * x + 1) * _squareHalfSize;
+                    _squareControllerDict[x+1][id].Push(false, newPos);
+                    _squareControllerDict[x][id] = _squareControllerDict[x+1][id];
+                }
+                newPos.x = ((float)_squareLength - 1) * _squareHalfSize;
+                tmp.Push(true, newPos);
+                _squareControllerDict[_squareLength-1][id] = tmp;
+                break;
+            
+            case 3: // Row Up
+                tmp = _squareControllerDict[_squareLength-1][id];
+                newPos = new Vector3(0, ((float)_squareLength - 2 * id - 1) * _squareHalfSize, 0);
+                for (int x = _squareLength - 1; x > 0; x--)
+                {
+                    newPos.x = ((float)_squareLength * -1 + 2 * x + 1) * _squareHalfSize;
+                    _squareControllerDict[x-1][id].Push(false, newPos);
+                    _squareControllerDict[x][id] = _squareControllerDict[x-1][id];
+                }
+                newPos.x = ((float)_squareLength * -1 + 1) * _squareHalfSize;
+                tmp.Push(true, newPos);
+                _squareControllerDict[0][id] = tmp;
+                break;
+        }
+        
+        RunGame();
     }
 }

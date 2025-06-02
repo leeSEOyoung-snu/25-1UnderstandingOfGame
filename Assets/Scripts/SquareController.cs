@@ -49,7 +49,6 @@ public class SquareController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log("NumberClicked");
         if (IsOpened) return;
         MainSceneManager.Instance.SquareSelected(Id);
     }

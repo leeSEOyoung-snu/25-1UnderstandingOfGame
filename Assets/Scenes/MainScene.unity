@@ -1580,6 +1580,8 @@ MonoBehaviour:
   - {fileID: 350090966}
   - {fileID: 1798758206}
   - {fileID: 2080410368}
+  kingReserveBtn: {fileID: 584188781}
+  queenReserveBtn: {fileID: 1794428431}
   reservedSquareCnt: 5
   kingColor: {r: 1, g: 0, b: 0, a: 1}
   queenColor: {r: 0, g: 0.088003635, b: 1, a: 1}

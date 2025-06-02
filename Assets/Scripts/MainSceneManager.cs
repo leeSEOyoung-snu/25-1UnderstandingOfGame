@@ -8,6 +8,7 @@ public class MainSceneManager : MonoBehaviour
     
     [Header("References")] 
     [SerializeField] private Transform[] columns;
+    [SerializeField] private GameObject kingReserveBtn, queenReserveBtn;
     
     [Header("Values")] 
     [SerializeField] private int reservedSquareCnt;
@@ -58,7 +59,6 @@ public class MainSceneManager : MonoBehaviour
         // 각각의 square 초기화
         _squareControllerDict = new Dictionary<int, Dictionary<int, SquareController>>();
         _squareLength = columns.Length;
-        _readyToReserveCnt = 0;
         
         for (int x = 0; x < _squareLength; x++)
         {
@@ -73,6 +73,11 @@ public class MainSceneManager : MonoBehaviour
                 _squareControllerDict[x].Add(y, controller);
             }
         }
+        
+        // Reserve 초기화
+        _readyToReserveCnt = 0;
+        kingReserveBtn.gameObject.SetActive(true);
+        queenReserveBtn.gameObject.SetActive(false);
     }
 
     public void RunGame()
@@ -102,6 +107,8 @@ public class MainSceneManager : MonoBehaviour
 
             _readyToReserveCnt = 0;
             _currTurn = PlayerType.Queen;
+            kingReserveBtn.gameObject.SetActive(false);
+            queenReserveBtn.gameObject.SetActive(true);
         }
         else if (_currTurn == PlayerType.Queen)
         {
@@ -113,6 +120,8 @@ public class MainSceneManager : MonoBehaviour
             _readyToReserveCnt = 0;
             _currTurn = PlayerType.King;
             _currState = GameStateType.Playing;
+            kingReserveBtn.gameObject.SetActive(false);
+            queenReserveBtn.gameObject.SetActive(false);
         }
     }
 

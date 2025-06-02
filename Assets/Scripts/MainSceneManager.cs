@@ -4,47 +4,115 @@ using UnityEngine;
 
 public class MainSceneManager : MonoBehaviour
 {
+    public static MainSceneManager Instance { get; private set; }
+    
     [Header("References")] 
     [SerializeField] private Transform[] columns;
     
     [Header("Values")] 
     [SerializeField] private int reservedSquareCnt;
-    [SerializeField] private Sprite[] numberSprites;
+    [SerializeField] private Color kingColor, queenColor;
 
     private Dictionary<int, Dictionary<int, SquareController>> _squareControllerDict;
+    private int _squareLength;
+    private int _readyToReserveCnt;
+    private Sprite[] _numberSprites;
 
     private enum PlayerType
     {
-        King,
-        Queen,
+        King = 0,
+        Queen = 1,
+    }
+
+    private enum GameStateType
+    {
+        Reserve,
+        Playing,
+        KingWin,
+        QueenWin,
+        Draw,
     }
 
     private PlayerType _currTurn;
+    private GameStateType _currState;
 
     private void Awake()
     {
-        Init();
+        if (Instance == null)
+        {
+            Instance = this;
+            Init();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void Init()
     {
         _currTurn = PlayerType.King;
+        _currState = GameStateType.Reserve;
+        _numberSprites = Resources.LoadAll<Sprite>("Numbers");
         
         // 각각의 square 초기화
         _squareControllerDict = new Dictionary<int, Dictionary<int, SquareController>>();
+        _squareLength = columns.Length;
+        _readyToReserveCnt = 0;
         
-        for (int x = 0; x < columns.Length; x++)
+        for (int x = 0; x < _squareLength; x++)
         {
             _squareControllerDict.Add(x, new Dictionary<int, SquareController>());
             
-            for (int y = 0; y < columns.Length; y++)
+            for (int y = 0; y < _squareLength; y++)
             {
                 int id = x * columns.Length + y;
                 
                 SquareController controller = columns[x].GetChild(y).gameObject.GetComponent<SquareController>();
-                controller.Init(id, numberSprites[id]);
+                controller.Init(id, _numberSprites[id]);
                 _squareControllerDict[x].Add(y, controller);
             }
+        }
+    }
+
+    public void RunGame()
+    {
+        switch (_currState)
+        {
+            case GameStateType.Reserve:
+                ReserveSquare();
+                break;
+            
+            case GameStateType.Playing:
+                bool isGameEnded = CheckWinner();
+                if (isGameEnded) EndGame();
+                else NextTurn();
+                break;
+        }
+    }
+
+    public void ReserveSquare()
+    {
+        if (_currTurn == PlayerType.King)
+        {
+            for (int x = 0; x < _squareLength; x++)
+            for (int y = 0; y < _squareLength; y++)
+                if (_squareControllerDict[x][y].IsReadyToReserve)
+                    _squareControllerDict[x][y].Reserve(0, kingColor);
+
+            _readyToReserveCnt = 0;
+            _currTurn = PlayerType.Queen;
+        }
+        else if (_currTurn == PlayerType.Queen)
+        {
+            for (int x = 0; x < _squareLength; x++)
+            for (int y = 0; y < _squareLength; y++)
+                if (_squareControllerDict[x][y].IsReadyToReserve)
+                    _squareControllerDict[x][y].Reserve(1, queenColor);
+            
+            _readyToReserveCnt = 0;
+            _currTurn = PlayerType.King;
+            _currState = GameStateType.Playing;
         }
     }
 
@@ -62,8 +130,31 @@ public class MainSceneManager : MonoBehaviour
         }
     }
 
-    private void CheckWinner()
+    private bool CheckWinner()
+    {
+        return false;
+    }
+
+    private void EndGame()
     {
         
+    }
+
+    public void SquareSelected(int id)
+    {
+        switch (_currState)
+        {
+            case GameStateType.Reserve:
+                SquareController squareController = _squareControllerDict[id / _squareLength][id % _squareLength];
+                if(squareController.IsReadyToReserve) _readyToReserveCnt--;
+                else if (_readyToReserveCnt >= reservedSquareCnt) return;
+                else _readyToReserveCnt++;
+                
+                squareController.ToggleReadyToReserve();
+                break;
+            
+            case GameStateType.Playing:
+                break;
+        }
     }
 }

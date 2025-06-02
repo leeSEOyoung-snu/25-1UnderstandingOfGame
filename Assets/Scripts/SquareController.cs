@@ -15,8 +15,6 @@ public class SquareController : MonoBehaviour
     [SerializeField] private float openAnimationDuration, colorChangeDuration;
     
     private Vector3 _openedRot = new Vector3(0, 180, 0);
-    
-    private Sequence _openSequence;
 
     private Color[] _playerColors = new Color[2];
 
@@ -37,7 +35,6 @@ public class SquareController : MonoBehaviour
 
     public void Init(int id, Sprite number, Color kingColor, Color queenColor)
     {
-        _openSequence = DOTween.Sequence();
         Id = id;
         IsOpened = false;
         IsReadyToReserve = false;
@@ -117,13 +114,15 @@ public class SquareController : MonoBehaviour
 
     public void Open(int player)
     {
+        Sequence openSequence = DOTween.Sequence();
+        
         IsOpened = true;
 
         switch (State)
         {
             case SquareStateType.Empty:
                 State = player == 0 ? SquareStateType.KingOccupied : SquareStateType.QueenOccupied;
-                _openSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
+                openSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
                     .Join(colorBottomSprite.DOColor(_playerColors[player], colorChangeDuration));
                 break;
             
@@ -138,7 +137,7 @@ public class SquareController : MonoBehaviour
             case SquareStateType.BothReserved:
                 State = player == 0 ? SquareStateType.QueenOccupied : SquareStateType.KingOccupied;
                 int occupier = Mathf.Abs(player - 1);
-                _openSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
+                openSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
                     .Join(colorBottomSprite.DOColor(_playerColors[occupier], colorChangeDuration));
                 break;
             
@@ -147,7 +146,7 @@ public class SquareController : MonoBehaviour
                 return;
         }
         
-        _openSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
-        _openSequence.Play();
+        openSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
+        openSequence.Play();
     }
 }

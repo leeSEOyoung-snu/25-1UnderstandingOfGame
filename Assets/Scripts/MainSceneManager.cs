@@ -69,7 +69,7 @@ public class MainSceneManager : MonoBehaviour
                 int id = x * columns.Length + y;
                 
                 SquareController controller = columns[x].GetChild(y).gameObject.GetComponent<SquareController>();
-                controller.Init(id, _numberSprites[id]);
+                controller.Init(id, _numberSprites[id], kingColor, queenColor);
                 _squareControllerDict[x].Add(y, controller);
             }
         }
@@ -89,9 +89,7 @@ public class MainSceneManager : MonoBehaviour
                 break;
             
             case GameStateType.Playing:
-                bool isGameEnded = CheckWinner();
-                if (isGameEnded) EndGame();
-                else NextTurn();
+                
                 break;
         }
     }
@@ -103,7 +101,7 @@ public class MainSceneManager : MonoBehaviour
             for (int x = 0; x < _squareLength; x++)
             for (int y = 0; y < _squareLength; y++)
                 if (_squareControllerDict[x][y].IsReadyToReserve)
-                    _squareControllerDict[x][y].Reserve(0, kingColor);
+                    _squareControllerDict[x][y].Reserve(0);
 
             _readyToReserveCnt = 0;
             _currTurn = PlayerType.Queen;
@@ -115,7 +113,7 @@ public class MainSceneManager : MonoBehaviour
             for (int x = 0; x < _squareLength; x++)
             for (int y = 0; y < _squareLength; y++)
                 if (_squareControllerDict[x][y].IsReadyToReserve)
-                    _squareControllerDict[x][y].Reserve(1, queenColor);
+                    _squareControllerDict[x][y].Reserve(1);
             
             _readyToReserveCnt = 0;
             _currTurn = PlayerType.King;
@@ -127,8 +125,6 @@ public class MainSceneManager : MonoBehaviour
 
     private void NextTurn()
     {
-        CheckWinner();
-
         if (_currTurn == PlayerType.King)
         {
             _currTurn = PlayerType.Queen;
@@ -151,18 +147,23 @@ public class MainSceneManager : MonoBehaviour
 
     public void SquareSelected(int id)
     {
+        SquareController squareController = _squareControllerDict[id / _squareLength][id % _squareLength];
+        
         switch (_currState)
         {
             case GameStateType.Reserve:
-                SquareController squareController = _squareControllerDict[id / _squareLength][id % _squareLength];
                 if(squareController.IsReadyToReserve) _readyToReserveCnt--;
                 else if (_readyToReserveCnt >= reservedSquareCnt) return;
                 else _readyToReserveCnt++;
                 
-                squareController.ToggleReadyToReserve();
+                squareController.ToggleReadyToReserve(_currTurn == PlayerType.King ? 0 : 1);
                 break;
             
             case GameStateType.Playing:
+                squareController.Open(_currTurn == PlayerType.King ? 0 : 1);
+                bool isGameEnded = CheckWinner();
+                if (isGameEnded) EndGame();
+                else NextTurn();
                 break;
         }
     }

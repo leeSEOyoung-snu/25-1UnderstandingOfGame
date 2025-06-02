@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,9 +12,13 @@ public class SquareController : MonoBehaviour
     [SerializeField] private SpriteRenderer colorBottomSprite;
     
     [Header("Values")]
-    [SerializeField] private Color readyToReserveColor;
+    [SerializeField] private float openAnimationDuration, colorChangeDuration;
     
-    private Quaternion _openedRot;
+    private Vector3 _openedRot = new Vector3(0, 180, 0);
+    
+    private Sequence _openSequence;
+
+    private Color[] _playerColors = new Color[2];
 
     public enum SquareStateType
     {
@@ -29,19 +35,17 @@ public class SquareController : MonoBehaviour
     public bool IsReadyToReserve { get; private set; }
     public SquareStateType State { get; private set; }
 
-    private void Awake()
+    public void Init(int id, Sprite number, Color kingColor, Color queenColor)
     {
-        _openedRot = Quaternion.Euler(0, 180, 0);
-    }
-
-    public void Init(int id, Sprite number)
-    {
+        _openSequence = DOTween.Sequence();
         Id = id;
         IsOpened = false;
         IsReadyToReserve = false;
         transform.rotation = Quaternion.identity;
         State = SquareStateType.Empty;
         numberSprite.sprite = number;
+        _playerColors[0] = kingColor;
+        _playerColors[1] = queenColor;
         numberSprite.color = Color.white;
         colorTopSprite.color = Color.clear;
         colorBottomSprite.color = Color.clear;
@@ -53,7 +57,7 @@ public class SquareController : MonoBehaviour
         MainSceneManager.Instance.SquareSelected(Id);
     }
 
-    public void ToggleReadyToReserve()
+    public void ToggleReadyToReserve(int player)
     {
         if (IsReadyToReserve)
         {
@@ -63,11 +67,11 @@ public class SquareController : MonoBehaviour
         else
         {
             IsReadyToReserve = true;
-            numberSprite.color = readyToReserveColor;
+            numberSprite.color = _playerColors[player];
         }
     }
 
-    public void Reserve(int player, Color color)
+    public void Reserve(int player)
     {
         switch (player)
         {
@@ -79,15 +83,15 @@ public class SquareController : MonoBehaviour
                 }
 
                 State = SquareStateType.KingReserved;
-                colorTopSprite.color = color;
-                colorBottomSprite.color = color;
+                colorTopSprite.color = _playerColors[player];
+                colorBottomSprite.color = _playerColors[player];
                 break;
             
             case 1: // Queen
                 if (State == SquareStateType.Empty)
                 {
                     State = SquareStateType.QueenReserved;
-                    colorTopSprite.color = color;
+                    colorTopSprite.color = _playerColors[player];
                 }
                 else if (State == SquareStateType.KingReserved)
                 {
@@ -99,7 +103,7 @@ public class SquareController : MonoBehaviour
                     return;
                 }
                 
-                colorBottomSprite.color = color;
+                colorBottomSprite.color = _playerColors[player];
                 break;
             
             default:
@@ -111,8 +115,39 @@ public class SquareController : MonoBehaviour
         numberSprite.color = Color.white;
     }
 
-    public void Open(int player, Color color)
+    public void Open(int player)
     {
+        IsOpened = true;
+
+        switch (State)
+        {
+            case SquareStateType.Empty:
+                State = player == 0 ? SquareStateType.KingOccupied : SquareStateType.QueenOccupied;
+                _openSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
+                    .Join(colorBottomSprite.DOColor(_playerColors[player], colorChangeDuration));
+                break;
+            
+            case SquareStateType.KingReserved:
+                State = SquareStateType.KingOccupied;
+                break;
+            
+            case SquareStateType.QueenReserved:
+                State = SquareStateType.QueenOccupied;
+                break;
+            
+            case SquareStateType.BothReserved:
+                State = player == 0 ? SquareStateType.QueenOccupied : SquareStateType.KingOccupied;
+                int occupier = Mathf.Abs(player - 1);
+                _openSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
+                    .Join(colorBottomSprite.DOColor(_playerColors[occupier], colorChangeDuration));
+                break;
+            
+            default:
+                Debug.LogError("이상한 상태: " + State);
+                return;
+        }
         
+        _openSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
+        _openSequence.Play();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MainSceneManager : MonoBehaviour
@@ -10,9 +11,12 @@ public class MainSceneManager : MonoBehaviour
     [SerializeField] private Transform[] columns;
     [SerializeField] private GameObject kingReserveBtn, queenReserveBtn;
     [SerializeField] private GameObject pushColumnDownParent, pushColumnUpParent, pushRowDownParent, pushRowUpParent;
+    [SerializeField] private GameObject endingPanel;
+    [SerializeField] private TextMeshProUGUI endingText;
     
     [Header("Values")] 
     [SerializeField] private int reservedSquareCnt;
+    [SerializeField] private int winCondition;
     [SerializeField] private Color kingColor, queenColor;
 
     private Dictionary<int, Dictionary<int, SquareController>> _squareControllerDict;
@@ -57,6 +61,7 @@ public class MainSceneManager : MonoBehaviour
         _currTurn = PlayerType.King;
         _currState = GameStateType.Reserve;
         _numberSprites = Resources.LoadAll<Sprite>("Numbers");
+        endingPanel.SetActive(false);
         
         // square controller 및 square 위치 초기화
         _squareControllerDict = new Dictionary<int, Dictionary<int, SquareController>>();
@@ -118,8 +123,7 @@ public class MainSceneManager : MonoBehaviour
             
             case GameStateType.Playing:
                 bool isGameEnded = CheckWinner();
-                if (isGameEnded) EndGame();
-                else _currTurn = _currTurn == PlayerType.King ? PlayerType.Queen : PlayerType.King;
+                if (!isGameEnded) _currTurn = _currTurn == PlayerType.King ? PlayerType.Queen : PlayerType.King;
                 break;
         }
     }
@@ -160,12 +164,242 @@ public class MainSceneManager : MonoBehaviour
 
     private bool CheckWinner()
     {
-        return false;
+        bool isDraw = true;
+        int maxKingCnt = 0, maxQueenCnt = 0;
+        int currKingCnt = 0, currQueenCnt = 0;
+        
+        // 세로 방향 체크
+        foreach (var pairColumn in _squareControllerDict)
+        {
+            for (int y = 0; y < _squareLength; y++)
+            {
+                switch (pairColumn.Value[y].State)
+                {
+                    case SquareController.SquareStateType.KingOccupied:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        currQueenCnt = 0;
+                        currKingCnt++;
+                        break;
+                    
+                    case SquareController.SquareStateType.QueenOccupied:
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currKingCnt = 0;
+                        currQueenCnt++;
+                        break;
+                    
+                    default:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currQueenCnt = 0;
+                        currKingCnt = 0;
+                        isDraw = false;
+                        break;
+                }
+            }
+            currKingCnt = 0;
+            currQueenCnt = 0;
+        }
+        
+        // 가로 방향 체크
+        currKingCnt = 0;
+        currQueenCnt = 0;
+        for (int y = 0; y < _squareLength; y++)
+        {
+            for (int x = 0; x < _squareLength; x++)
+            {
+                switch (_squareControllerDict[x][y].State)
+                {
+                    case SquareController.SquareStateType.KingOccupied:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        currQueenCnt = 0;
+                        currKingCnt++;
+                        break;
+                    
+                    case SquareController.SquareStateType.QueenOccupied:
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currKingCnt = 0;
+                        currQueenCnt++;
+                        break;
+                    default:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currQueenCnt = 0;
+                        currKingCnt = 0;
+                        isDraw = false;
+                        break;
+                }
+            }
+            currKingCnt = 0;
+            currQueenCnt = 0;
+        }
+        
+        // 우하향 대각선 체크
+        currKingCnt = 0;
+        currQueenCnt = 0;
+        for (int x = 0; x < _squareLength; x++)
+        {
+            for (int i = 0; i < _squareLength - x; i++)
+            {
+                switch (_squareControllerDict[x+i][i].State)
+                {
+                    case SquareController.SquareStateType.KingOccupied:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        currQueenCnt = 0;
+                        currKingCnt++;
+                        break;
+                    
+                    case SquareController.SquareStateType.QueenOccupied:
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currKingCnt = 0;
+                        currQueenCnt++;
+                        break;
+                    
+                    default:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currQueenCnt = 0;
+                        currKingCnt = 0;
+                        isDraw = false;
+                        break;
+                }
+            }
+            currKingCnt = 0;
+            currQueenCnt = 0;
+        }
+        
+        currKingCnt = 0;
+        currQueenCnt = 0;
+        for (int y = 0; y < _squareLength; y++)
+        {
+            for (int i = 0; i < _squareLength - y; i++)
+            {
+                switch (_squareControllerDict[i][y+i].State)
+                {
+                    case SquareController.SquareStateType.KingOccupied:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        currQueenCnt = 0;
+                        currKingCnt++;
+                        break;
+                    
+                    case SquareController.SquareStateType.QueenOccupied:
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currKingCnt = 0;
+                        currQueenCnt++;
+                        break;
+                    
+                    default:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currQueenCnt = 0;
+                        currKingCnt = 0;
+                        isDraw = false;
+                        break;
+                }
+            }
+            currKingCnt = 0;
+            currQueenCnt = 0;
+        }
+        
+        // 우상향 대각선 체크
+        currKingCnt = 0;
+        currQueenCnt = 0;
+        for (int x = 0; x < _squareLength; x++)
+        {
+            for (int i = 0; i < x+1; i++)
+            {
+                switch (_squareControllerDict[x-i][i].State)
+                {
+                    case SquareController.SquareStateType.KingOccupied:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        currQueenCnt = 0;
+                        currKingCnt++;
+                        break;
+                    
+                    case SquareController.SquareStateType.QueenOccupied:
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currKingCnt = 0;
+                        currQueenCnt++;
+                        break;
+                    
+                    default:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currQueenCnt = 0;
+                        currKingCnt = 0;
+                        isDraw = false;
+                        break;
+                }
+            }
+            currKingCnt = 0;
+            currQueenCnt = 0;
+        }
+        
+        currKingCnt = 0;
+        currQueenCnt = 0;
+        for (int y = 0; y < _squareLength; y++)
+        {
+            for (int i = 0; i < y+1; i++)
+            {
+                switch (_squareControllerDict[i][y-i].State)
+                {
+                    case SquareController.SquareStateType.KingOccupied:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        currQueenCnt = 0;
+                        currKingCnt++;
+                        break;
+                    
+                    case SquareController.SquareStateType.QueenOccupied:
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currKingCnt = 0;
+                        currQueenCnt++;
+                        break;
+                    
+                    default:
+                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
+                        currQueenCnt = 0;
+                        currKingCnt = 0;
+                        isDraw = false;
+                        break;
+                }
+            }
+            currKingCnt = 0;
+            currQueenCnt = 0;
+        }
+        
+        Debug.Log($"maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        
+        if (maxKingCnt >= winCondition) _currState = GameStateType.KingWin;
+        else if (maxQueenCnt >= winCondition) _currState = GameStateType.QueenWin;
+        else if (isDraw) _currState = GameStateType.Draw; 
+        else return false;
+        
+        EndGame();
+        return true;
     }
 
     private void EndGame()
     {
+        switch (_currState)
+        {
+            case GameStateType.KingWin:
+                endingText.text = "King Win!";
+                break;
+            
+            case GameStateType.QueenWin:
+                endingText.text = "Queen Win!";
+                break;
+            
+            case GameStateType.Draw:
+                endingText.text = "Draw";
+                break;
+            
+            default:
+                Debug.LogError("이상한 상태: " + _currState);
+                return;
+        }
         
+        endingPanel.SetActive(true);
     }
 
     public void SquareSelected(SquareController squareController)

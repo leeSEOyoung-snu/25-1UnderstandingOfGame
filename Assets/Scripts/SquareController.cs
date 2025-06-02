@@ -22,7 +22,7 @@ public class SquareController : MonoBehaviour
     
     private bool _isMoving;
     
-    private Sequence _movingSequence;
+    public Sequence MovingSequence { get; private set; }
 
     public enum SquareStateType
     {
@@ -123,9 +123,9 @@ public class SquareController : MonoBehaviour
     public void Open(int player)
     {
         _isMoving = true;
-        if (_movingSequence != null &&_movingSequence.IsActive())
-            _movingSequence.Kill();
-        _movingSequence = DOTween.Sequence();
+        if (MovingSequence != null &&MovingSequence.IsActive())
+            MovingSequence.Kill();
+        MovingSequence = DOTween.Sequence();
         
         IsOpened = true;
 
@@ -133,7 +133,7 @@ public class SquareController : MonoBehaviour
         {
             case SquareStateType.Empty:
                 State = player == 0 ? SquareStateType.KingOccupied : SquareStateType.QueenOccupied;
-                _movingSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
+                MovingSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
                     .Join(colorBottomSprite.DOColor(_playerColors[player], colorChangeDuration));
                 break;
             
@@ -148,7 +148,7 @@ public class SquareController : MonoBehaviour
             case SquareStateType.BothReserved:
                 State = player == 0 ? SquareStateType.QueenOccupied : SquareStateType.KingOccupied;
                 int occupier = Mathf.Abs(player - 1);
-                _movingSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
+                MovingSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
                     .Join(colorBottomSprite.DOColor(_playerColors[occupier], colorChangeDuration));
                 break;
             
@@ -157,29 +157,29 @@ public class SquareController : MonoBehaviour
                 return;
         }
         
-        _movingSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
-        _movingSequence.Play().OnComplete(()=>_isMoving=false);
+        MovingSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
+        MovingSequence.Play().OnComplete(()=>_isMoving=false);
     }
 
     public void Push(bool isLastOne, Vector3 newPos)
     {
-        if (_movingSequence != null &&_movingSequence.IsActive())
-            _movingSequence.Kill();
-        _movingSequence = DOTween.Sequence();
+        if (MovingSequence != null &&MovingSequence.IsActive())
+            MovingSequence.Kill();
+        MovingSequence = DOTween.Sequence();
 
         if (isLastOne)
         {
             Vector3 milestone0 = new Vector3(transform.position.x, transform.position.y, moveAnimationPosZ);
             Vector3 milestone1 = new Vector3(newPos.x, newPos.y, moveAnimationPosZ);
-            _movingSequence.Append(transform.DOMove(milestone0, moveZAxisAnimationDuration));
-            _movingSequence.Append(transform.DOMove(milestone1, moveAnimationDuration));
-            _movingSequence.Append(transform.DOMove(newPos, moveZAxisAnimationDuration));
+            MovingSequence.Append(transform.DOMove(milestone0, moveZAxisAnimationDuration));
+            MovingSequence.Append(transform.DOMove(milestone1, moveAnimationDuration));
+            MovingSequence.Append(transform.DOMove(newPos, moveZAxisAnimationDuration));
         }
         else
         {
-            _movingSequence.Append(transform.DOMove(newPos, moveAnimationDuration));
+            MovingSequence.Append(transform.DOMove(newPos, moveAnimationDuration));
         }
         
-        _movingSequence.Play().OnComplete(()=>_isMoving=false);
+        MovingSequence.Play().OnComplete(()=>_isMoving=false);
     }
 }

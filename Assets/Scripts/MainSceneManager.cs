@@ -169,11 +169,11 @@ public class MainSceneManager : MonoBehaviour
         int currKingCnt = 0, currQueenCnt = 0;
         
         // 세로 방향 체크
-        foreach (var pairColumn in _squareControllerDict)
+        for (int x = 0; x < _squareLength; x++)
         {
             for (int y = 0; y < _squareLength; y++)
             {
-                switch (pairColumn.Value[y].State)
+                switch (_squareControllerDict[x][y].State)
                 {
                     case SquareController.SquareStateType.KingOccupied:
                         if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;

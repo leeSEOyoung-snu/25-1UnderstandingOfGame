@@ -20,8 +20,6 @@ public class SquareController : MonoBehaviour
 
     private Color[] _playerColors = new Color[2];
     
-    private bool _isMoving;
-    
     public Sequence MovingSequence { get; private set; }
 
     public enum SquareStateType
@@ -34,17 +32,14 @@ public class SquareController : MonoBehaviour
         QueenOccupied,
     }
     
-    public int Id {get; private set;}
     public bool IsOpened { get; private set; }
     public bool IsReadyToReserve { get; private set; }
     public SquareStateType State { get; private set; }
 
-    public void Init(int id, Sprite number, Color kingColor, Color queenColor, Vector3 initPos)
+    public void Init(Sprite number, Color kingColor, Color queenColor, Vector3 initPos)
     {
-        Id = id;
         IsOpened = false;
         IsReadyToReserve = false;
-        _isMoving = false;
         transform.rotation = Quaternion.identity;
         State = SquareStateType.Empty;
         transform.position = initPos;
@@ -58,7 +53,7 @@ public class SquareController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (IsOpened || _isMoving) return;
+        if (IsOpened) return;
         MainSceneManager.Instance.SquareSelected(this);
     }
 
@@ -122,9 +117,8 @@ public class SquareController : MonoBehaviour
 
     public void Open(int player)
     {
-        _isMoving = true;
         if (MovingSequence != null &&MovingSequence.IsActive())
-            MovingSequence.Kill();
+            MovingSequence.Complete();
         MovingSequence = DOTween.Sequence();
         
         IsOpened = true;
@@ -158,13 +152,13 @@ public class SquareController : MonoBehaviour
         }
         
         MovingSequence.Prepend(transform.DORotate(_openedRot, openAnimationDuration));
-        MovingSequence.Play().OnComplete(()=>_isMoving=false);
+        MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.isMoving=false);
     }
 
     public void Push(bool isLastOne, Vector3 newPos)
     {
         if (MovingSequence != null &&MovingSequence.IsActive())
-            MovingSequence.Kill();
+            MovingSequence.Complete();
         MovingSequence = DOTween.Sequence();
 
         if (isLastOne)
@@ -174,12 +168,13 @@ public class SquareController : MonoBehaviour
             MovingSequence.Append(transform.DOMove(milestone0, moveZAxisAnimationDuration));
             MovingSequence.Append(transform.DOMove(milestone1, moveAnimationDuration));
             MovingSequence.Append(transform.DOMove(newPos, moveZAxisAnimationDuration));
+            // MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.isMoving=false);
+            MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.RunGame());
         }
         else
         {
             MovingSequence.Append(transform.DOMove(newPos, moveAnimationDuration));
+            MovingSequence.Play();
         }
-        
-        MovingSequence.Play().OnComplete(()=>_isMoving=false);
     }
 }

@@ -25,6 +25,8 @@ public class MainSceneManager : MonoBehaviour
     private Sprite[] _numberSprites;
     private float _squareHalfSize;
 
+    public bool isMoving;
+
     private enum PlayerType
     {
         King = 0,
@@ -58,6 +60,8 @@ public class MainSceneManager : MonoBehaviour
 
     public void Init()
     {
+        isMoving = false;
+        
         _currTurn = PlayerType.King;
         _currState = GameStateType.Reserve;
         _numberSprites = Resources.LoadAll<Sprite>("Numbers");
@@ -80,7 +84,7 @@ public class MainSceneManager : MonoBehaviour
                 float initPosX = ((float)_squareLength*-1 + 2*x + 1) * _squareHalfSize;
                 float initPosY = ((float)_squareLength - 2*y - 1) * _squareHalfSize;
                 Vector3 initPos = new Vector3(initPosX, initPosY, 0);
-                squaresControllers[y].Init(id, _numberSprites[id], kingColor, queenColor, initPos);
+                squaresControllers[y].Init(_numberSprites[id], kingColor, queenColor, initPos);
                 _squareControllerDict[x].Add(y, squaresControllers[y]);
             }
         }
@@ -115,6 +119,7 @@ public class MainSceneManager : MonoBehaviour
 
     public void RunGame()
     {
+        isMoving = false;
         switch (_currState)
         {
             case GameStateType.Reserve:
@@ -196,11 +201,17 @@ public class MainSceneManager : MonoBehaviour
                         break;
                 }
             }
+            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
             currKingCnt = 0;
             currQueenCnt = 0;
         }
         
+        // Debug.Log($"세로 체크 - maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        
         // 가로 방향 체크
+        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
         currKingCnt = 0;
         currQueenCnt = 0;
         for (int y = 0; y < _squareLength; y++)
@@ -228,12 +239,19 @@ public class MainSceneManager : MonoBehaviour
                         isDraw = false;
                         break;
                 }
+                // Debug.Log($"square state: {_squareControllerDict[x][y].State}, maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
             }
+            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
             currKingCnt = 0;
             currQueenCnt = 0;
         }
         
+        // Debug.Log($"가로 체크 - maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        
         // 우하향 대각선 체크
+        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
         currKingCnt = 0;
         currQueenCnt = 0;
         for (int x = 0; x < _squareLength; x++)
@@ -263,10 +281,14 @@ public class MainSceneManager : MonoBehaviour
                         break;
                 }
             }
+            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
             currKingCnt = 0;
             currQueenCnt = 0;
         }
         
+        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
         currKingCnt = 0;
         currQueenCnt = 0;
         for (int y = 0; y < _squareLength; y++)
@@ -296,11 +318,17 @@ public class MainSceneManager : MonoBehaviour
                         break;
                 }
             }
+            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
             currKingCnt = 0;
             currQueenCnt = 0;
         }
         
+        // Debug.Log($"우하향 체크 - maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        
         // 우상향 대각선 체크
+        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
         currKingCnt = 0;
         currQueenCnt = 0;
         for (int x = 0; x < _squareLength; x++)
@@ -330,10 +358,14 @@ public class MainSceneManager : MonoBehaviour
                         break;
                 }
             }
+            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
             currKingCnt = 0;
             currQueenCnt = 0;
         }
         
+        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
         currKingCnt = 0;
         currQueenCnt = 0;
         for (int y = 0; y < _squareLength; y++)
@@ -363,6 +395,8 @@ public class MainSceneManager : MonoBehaviour
                         break;
                 }
             }
+            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
+            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
             currKingCnt = 0;
             currQueenCnt = 0;
         }
@@ -415,6 +449,8 @@ public class MainSceneManager : MonoBehaviour
                 break;
             
             case GameStateType.Playing:
+                if (isMoving) return;
+                isMoving = true;
                 squareController.Open(_currTurn == PlayerType.King ? 0 : 1);
                 RunGame();
                 break;
@@ -423,6 +459,8 @@ public class MainSceneManager : MonoBehaviour
 
     public void Push(int pushDirection, int id)
     {
+        if (isMoving) return;
+        isMoving = true;
         SquareController tmp;
         Vector3 newPos;
         switch(pushDirection) 
@@ -435,10 +473,12 @@ public class MainSceneManager : MonoBehaviour
                     newPos.y = ((float)_squareLength - 2 * y - 1) * _squareHalfSize;
                     _squareControllerDict[id][y+1].Push(false, newPos);
                     _squareControllerDict[id][y] = _squareControllerDict[id][y+1];
+                    // Debug.Log($"Column Down - y: {y}");
                 }
                 newPos.y = ((float)_squareLength * -1 + 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[id][_squareLength - 1] = tmp;
+                // Debug.Log($"Column Down - y: 5");
                 break;
             
             case 1: // Column Up
@@ -449,10 +489,12 @@ public class MainSceneManager : MonoBehaviour
                     newPos.y = ((float)_squareLength - 2 * y - 1) * _squareHalfSize;
                     _squareControllerDict[id][y - 1].Push(false, newPos);
                     _squareControllerDict[id][y] = _squareControllerDict[id][y - 1];
+                    // Debug.Log($"Column Up - y: {y}");
                 }
                 newPos.y = ((float)_squareLength - 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[id][0] = tmp;
+                // Debug.Log($"Column Up - y: 0");
                 break;
             
             case 2: // Row Down
@@ -463,10 +505,12 @@ public class MainSceneManager : MonoBehaviour
                     newPos.x = ((float)_squareLength * -1 + 2 * x + 1) * _squareHalfSize;
                     _squareControllerDict[x+1][id].Push(false, newPos);
                     _squareControllerDict[x][id] = _squareControllerDict[x+1][id];
+                    // Debug.Log($"Row Down - x: {x}");
                 }
                 newPos.x = ((float)_squareLength - 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[_squareLength-1][id] = tmp;
+                // Debug.Log($"Row Down - x: 5");
                 break;
             
             case 3: // Row Up
@@ -477,13 +521,15 @@ public class MainSceneManager : MonoBehaviour
                     newPos.x = ((float)_squareLength * -1 + 2 * x + 1) * _squareHalfSize;
                     _squareControllerDict[x-1][id].Push(false, newPos);
                     _squareControllerDict[x][id] = _squareControllerDict[x-1][id];
+                    // Debug.Log($"Row Up - x: {x}");
                 }
                 newPos.x = ((float)_squareLength * -1 + 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[0][id] = tmp;
+                // Debug.Log($"Row Up - x: 0");
                 break;
         }
-        
-        RunGame();
     }
+    
+    
 }

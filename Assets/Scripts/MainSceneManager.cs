@@ -154,9 +154,18 @@ public class MainSceneManager : MonoBehaviour
                 bool isGameEnded = CheckWinner();
                 if (!isGameEnded)
                 {
-                    _currTurn = _currTurn == PlayerType.King ? PlayerType.Queen : PlayerType.King;
-                    kingTurn.SetActive(_currTurn == PlayerType.King);
-                    queenTurn.SetActive(_currTurn == PlayerType.Queen);
+                    if (_currTurn == PlayerType.King)
+                    {
+                        _currTurn = PlayerType.Queen;
+                        kingTurn.SetActive(false);
+                        queenTurn.SetActive(true);
+                    }
+                    else if (_currTurn == PlayerType.Queen)
+                    {
+                        _currTurn = PlayerType.King;
+                        kingTurn.SetActive(true);
+                        queenTurn.SetActive(false);
+                    }
 
                     foreach (var pair1 in _pushBtnBehavioursDict)
                     foreach (var pair2 in pair1.Value)

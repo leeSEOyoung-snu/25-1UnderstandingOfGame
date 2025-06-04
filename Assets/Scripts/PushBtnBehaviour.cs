@@ -38,9 +38,9 @@ public class PushBtnBehaviour : MonoBehaviour
 
     public void MakeDisabled(int turn)
     {
-        _disabledTurn = turn;
+        _disabledTurn = turn+1;
         pushButton.interactable = false;
-        buttonText.text = _disabledTurn.ToString();
+        buttonText.text = turn.ToString();
     }
 
     public void UpdateDisabled()

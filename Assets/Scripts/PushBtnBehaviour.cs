@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PushBtnBehaviour : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI buttonText;
+    [SerializeField] private Button pushButton;
+    
     private enum PushDirectionType
     {
         ColumnDown,
@@ -15,14 +20,34 @@ public class PushBtnBehaviour : MonoBehaviour
     private PushDirectionType _pushDirection;
     private int _id;
 
+    private int _disabledTurn;
+
     public void Init(int pushDirection, int id)
     {
         _pushDirection = (PushDirectionType)pushDirection;
         _id = id;
+        _disabledTurn = 0;
+        buttonText.text = "0";
+        pushButton.interactable = true;
     }
 
     public void PushBtnClicked()
     {
         MainSceneManager.Instance.Push((int)_pushDirection, _id);
+    }
+
+    public void MakeDisabled(int turn)
+    {
+        _disabledTurn = turn;
+        pushButton.interactable = false;
+        buttonText.text = _disabledTurn.ToString();
+    }
+
+    public void UpdateDisabled()
+    {
+        if (_disabledTurn == 0) return;
+        _disabledTurn--;
+        buttonText.text = _disabledTurn.ToString();
+        if (_disabledTurn == 0) pushButton.interactable = true;
     }
 }

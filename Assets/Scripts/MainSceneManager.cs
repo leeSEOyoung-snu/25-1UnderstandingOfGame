@@ -19,8 +19,10 @@ public class MainSceneManager : MonoBehaviour
     [SerializeField] private int reservedSquareCnt;
     [SerializeField] private int winCondition;
     [SerializeField] private Color kingColor, queenColor;
+    [SerializeField] private int disablePushBtnTurn;
 
     private Dictionary<int, Dictionary<int, SquareController>> _squareControllerDict;
+    private Dictionary<int, Dictionary<int, PushBtnBehaviour>> _pushBtnBehavioursDict;
     private int _squareLength;
     private int _readyToReserveCnt;
     private Sprite[] _numberSprites;
@@ -104,21 +106,39 @@ public class MainSceneManager : MonoBehaviour
         pushRowDownParent.SetActive(false);
         pushRowUpParent.SetActive(false);
         
+        _pushBtnBehavioursDict = new Dictionary<int, Dictionary<int, PushBtnBehaviour>>();
+        
         PushBtnBehaviour[] pushBtnsBehaviours = pushColumnDownParent.GetComponentsInChildren<PushBtnBehaviour>();
+        _pushBtnBehavioursDict.Add(0, new Dictionary<int, PushBtnBehaviour>());
         for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+        {
             pushBtnsBehaviours[i].Init(0, i);
+            _pushBtnBehavioursDict[0][i] = pushBtnsBehaviours[i];
+        }
         
         pushBtnsBehaviours = pushColumnUpParent.GetComponentsInChildren<PushBtnBehaviour>();
+        _pushBtnBehavioursDict.Add(1, new Dictionary<int, PushBtnBehaviour>());
         for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+        {
             pushBtnsBehaviours[i].Init(1, i);
+            _pushBtnBehavioursDict[1][i] = pushBtnsBehaviours[i];
+        }
         
         pushBtnsBehaviours = pushRowDownParent.GetComponentsInChildren<PushBtnBehaviour>();
+        _pushBtnBehavioursDict.Add(2, new Dictionary<int, PushBtnBehaviour>());
         for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+        {
             pushBtnsBehaviours[i].Init(2, i);
+            _pushBtnBehavioursDict[2][i] = pushBtnsBehaviours[i];
+        }
         
         pushBtnsBehaviours = pushRowUpParent.GetComponentsInChildren<PushBtnBehaviour>();
+        _pushBtnBehavioursDict.Add(3, new Dictionary<int, PushBtnBehaviour>());
         for(int i = 0; i < pushBtnsBehaviours.Length; i++)
+        {
             pushBtnsBehaviours[i].Init(3, i);
+            _pushBtnBehavioursDict[3][i] = pushBtnsBehaviours[i];
+        }
     }
 
     public void RunGame()
@@ -137,6 +157,10 @@ public class MainSceneManager : MonoBehaviour
                     _currTurn = _currTurn == PlayerType.King ? PlayerType.Queen : PlayerType.King;
                     kingTurn.SetActive(_currTurn == PlayerType.King);
                     queenTurn.SetActive(_currTurn == PlayerType.Queen);
+
+                    foreach (var pair1 in _pushBtnBehavioursDict)
+                    foreach (var pair2 in pair1.Value)
+                        pair2.Value.UpdateDisabled();
                 }
                 break;
         }
@@ -476,6 +500,7 @@ public class MainSceneManager : MonoBehaviour
         isMoving = true;
         SquareController tmp;
         Vector3 newPos;
+        _pushBtnBehavioursDict[pushDirection][id].MakeDisabled(disablePushBtnTurn);
         switch(pushDirection) 
         {
             case 0: // Column Down
@@ -486,12 +511,11 @@ public class MainSceneManager : MonoBehaviour
                     newPos.y = ((float)_squareLength - 2 * y - 1) * _squareHalfSize;
                     _squareControllerDict[id][y+1].Push(false, newPos);
                     _squareControllerDict[id][y] = _squareControllerDict[id][y+1];
-                    // Debug.Log($"Column Down - y: {y}");
                 }
                 newPos.y = ((float)_squareLength * -1 + 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[id][_squareLength - 1] = tmp;
-                // Debug.Log($"Column Down - y: 5");
+                _pushBtnBehavioursDict[1][id].MakeDisabled(disablePushBtnTurn);
                 break;
             
             case 1: // Column Up
@@ -502,12 +526,11 @@ public class MainSceneManager : MonoBehaviour
                     newPos.y = ((float)_squareLength - 2 * y - 1) * _squareHalfSize;
                     _squareControllerDict[id][y - 1].Push(false, newPos);
                     _squareControllerDict[id][y] = _squareControllerDict[id][y - 1];
-                    // Debug.Log($"Column Up - y: {y}");
                 }
                 newPos.y = ((float)_squareLength - 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[id][0] = tmp;
-                // Debug.Log($"Column Up - y: 0");
+                _pushBtnBehavioursDict[0][id].MakeDisabled(disablePushBtnTurn);
                 break;
             
             case 2: // Row Down
@@ -518,12 +541,11 @@ public class MainSceneManager : MonoBehaviour
                     newPos.x = ((float)_squareLength * -1 + 2 * x + 1) * _squareHalfSize;
                     _squareControllerDict[x+1][id].Push(false, newPos);
                     _squareControllerDict[x][id] = _squareControllerDict[x+1][id];
-                    // Debug.Log($"Row Down - x: {x}");
                 }
                 newPos.x = ((float)_squareLength - 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[_squareLength-1][id] = tmp;
-                // Debug.Log($"Row Down - x: 5");
+                _pushBtnBehavioursDict[3][id].MakeDisabled(disablePushBtnTurn);
                 break;
             
             case 3: // Row Up
@@ -534,12 +556,11 @@ public class MainSceneManager : MonoBehaviour
                     newPos.x = ((float)_squareLength * -1 + 2 * x + 1) * _squareHalfSize;
                     _squareControllerDict[x-1][id].Push(false, newPos);
                     _squareControllerDict[x][id] = _squareControllerDict[x-1][id];
-                    // Debug.Log($"Row Up - x: {x}");
                 }
                 newPos.x = ((float)_squareLength * -1 + 1) * _squareHalfSize;
                 tmp.Push(true, newPos);
                 _squareControllerDict[0][id] = tmp;
-                // Debug.Log($"Row Up - x: 0");
+                _pushBtnBehavioursDict[2][id].MakeDisabled(disablePushBtnTurn);
                 break;
         }
     }

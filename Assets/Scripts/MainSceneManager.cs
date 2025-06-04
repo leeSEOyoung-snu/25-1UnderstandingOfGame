@@ -13,6 +13,7 @@ public class MainSceneManager : MonoBehaviour
     [SerializeField] private GameObject pushColumnDownParent, pushColumnUpParent, pushRowDownParent, pushRowUpParent;
     [SerializeField] private GameObject endingPanel;
     [SerializeField] private TextMeshProUGUI endingText;
+    [SerializeField] private GameObject kingTurn, queenTurn;
     
     [Header("Values")] 
     [SerializeField] private int reservedSquareCnt;
@@ -66,6 +67,9 @@ public class MainSceneManager : MonoBehaviour
         _currState = GameStateType.Reserve;
         _numberSprites = Resources.LoadAll<Sprite>("Numbers");
         endingPanel.SetActive(false);
+        
+        kingTurn.SetActive(false);
+        queenTurn.SetActive(false);
         
         // square controller 및 square 위치 초기화
         _squareControllerDict = new Dictionary<int, Dictionary<int, SquareController>>();
@@ -128,7 +132,12 @@ public class MainSceneManager : MonoBehaviour
             
             case GameStateType.Playing:
                 bool isGameEnded = CheckWinner();
-                if (!isGameEnded) _currTurn = _currTurn == PlayerType.King ? PlayerType.Queen : PlayerType.King;
+                if (!isGameEnded)
+                {
+                    _currTurn = _currTurn == PlayerType.King ? PlayerType.Queen : PlayerType.King;
+                    kingTurn.SetActive(_currTurn == PlayerType.King);
+                    queenTurn.SetActive(_currTurn == PlayerType.Queen);
+                }
                 break;
         }
     }
@@ -156,6 +165,8 @@ public class MainSceneManager : MonoBehaviour
             
             _readyToReserveCnt = 0;
             _currTurn = PlayerType.King;
+            kingTurn.SetActive(true);
+            queenTurn.SetActive(false);
             _currState = GameStateType.Playing;
             kingReserveBtn.gameObject.SetActive(false);
             queenReserveBtn.gameObject.SetActive(false);

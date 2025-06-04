@@ -144,6 +144,8 @@ public class MainSceneManager : MonoBehaviour
 
     public void ReserveSquare()
     {
+        if (_readyToReserveCnt != reservedSquareCnt) return;
+        
         if (_currTurn == PlayerType.King)
         {
             for (int x = 0; x < _squareLength; x++)

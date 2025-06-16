@@ -133,11 +133,13 @@ public class SquareController : MonoBehaviour
                 State = player == 0 ? SquareStateType.ZombieOccupied : SquareStateType.VaccineOccupied;
                 markSpriteRenderer.color = Color.clear;
                 markSpriteRenderer.sprite = markSprites[player];
+                AudioManager.PlaySfx(player == 0 ? 1 : 4);
                 MovingSequence.Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration));
                 break;
             
             case SquareStateType.ZombieReserved:
                 State = SquareStateType.ZombieOccupied;
+                AudioManager.PlaySfx(player == 0 ? 1 : 5);
                 MovingSequence.Append(markSpriteRenderer.DOColor(Color.clear, colorChangeDuration / 2))
                     .AppendCallback(() => markSpriteRenderer.sprite = markSprites[0])
                     .Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration / 2));
@@ -145,6 +147,7 @@ public class SquareController : MonoBehaviour
             
             case SquareStateType.VaccineReserved:
                 State = SquareStateType.VaccineOccupied;
+                AudioManager.PlaySfx(player == 0 ? 2 : 4);
                 MovingSequence.Append(markSpriteRenderer.DOColor(Color.clear, colorChangeDuration / 2))
                     .AppendCallback(() => markSpriteRenderer.sprite = markSprites[1])
                     .Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration / 2));
@@ -153,6 +156,7 @@ public class SquareController : MonoBehaviour
             case SquareStateType.BothReserved:
                 State = player == 0 ? SquareStateType.VaccineOccupied : SquareStateType.ZombieOccupied;
                 int occupier = Mathf.Abs(player - 1);
+                AudioManager.PlaySfx(occupier == 0 ? 6 : 3);
                 MovingSequence.Append(markSpriteRenderer.DOColor(Color.clear, colorChangeDuration / 2))
                     .AppendCallback(() => markSpriteRenderer.sprite = markSprites[occupier])
                     .Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration / 2));
@@ -180,8 +184,6 @@ public class SquareController : MonoBehaviour
             MovingSequence.Append(transform.DOMove(milestone0, moveZAxisAnimationDuration));
             MovingSequence.Append(transform.DOMove(milestone1, moveAnimationDuration));
             MovingSequence.Append(transform.DOMove(newPos, moveZAxisAnimationDuration));
-            // MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.isMoving=false);
-            // MovingSequence.OnComplete(()=>MainSceneManager.Instance.RunGame());
             MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.PushEnded());
         }
         else

@@ -445,10 +445,12 @@ public class MainSceneManager : MonoBehaviour
         {
             case GameStateType.ZombieWin:
                 endingText.text = "좀비 승리!";
+                AudioManager.PlaySfx(7);
                 break;
             
             case GameStateType.VaccineWin:
                 endingText.text = "인간 승리!";
+                AudioManager.PlaySfx(7);
                 break;
             
             case GameStateType.Draw:
@@ -483,6 +485,7 @@ public class MainSceneManager : MonoBehaviour
                 }
                 
                 squareController.ToggleReadyToReserve(_currTurn == PlayerType.Zombie ? 0 : 1);
+                AudioManager.PlaySfx(0);
                 break;
             
             case GameStateType.Playing:

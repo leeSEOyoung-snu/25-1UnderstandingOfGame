@@ -264,8 +264,6 @@ public class MainSceneManager : MonoBehaviour
         // Debug.Log($"세로 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 가로 방향 체크
-        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
-        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
         currZombieCnt = 0;
         currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
@@ -304,8 +302,6 @@ public class MainSceneManager : MonoBehaviour
         // Debug.Log($"가로 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 우하향 대각선 체크
-        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
-        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
         currZombieCnt = 0;
         currVaccineCnt = 0;
         for (int x = 0; x < _squareLength; x++)
@@ -341,8 +337,6 @@ public class MainSceneManager : MonoBehaviour
             currVaccineCnt = 0;
         }
         
-        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
-        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
         currZombieCnt = 0;
         currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
@@ -381,8 +375,6 @@ public class MainSceneManager : MonoBehaviour
         // Debug.Log($"우하향 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 우상향 대각선 체크
-        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
-        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
         currZombieCnt = 0;
         currVaccineCnt = 0;
         for (int x = 0; x < _squareLength; x++)
@@ -418,8 +410,6 @@ public class MainSceneManager : MonoBehaviour
             currVaccineCnt = 0;
         }
         
-        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
-        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
         currZombieCnt = 0;
         currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)

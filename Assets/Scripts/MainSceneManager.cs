@@ -121,16 +121,16 @@ public class MainSceneManager : MonoBehaviour
         _pushBtnBehavioursDict.Add(1, new Dictionary<int, PushBtnBehaviour>());
         for(int i = 0; i < pushBtnsBehaviours.Length; i++)
         {
-            pushBtnsBehaviours[i].Init(1, i);
-            _pushBtnBehavioursDict[1][i] = pushBtnsBehaviours[i];
+            pushBtnsBehaviours[i].Init(1, pushBtnsBehaviours.Length - 1 - i);
+            _pushBtnBehavioursDict[1][pushBtnsBehaviours.Length - 1 - i] = pushBtnsBehaviours[i];
         }
         
         pushBtnsBehaviours = pushRowDownParent.GetComponentsInChildren<PushBtnBehaviour>();
         _pushBtnBehavioursDict.Add(2, new Dictionary<int, PushBtnBehaviour>());
         for(int i = 0; i < pushBtnsBehaviours.Length; i++)
         {
-            pushBtnsBehaviours[i].Init(2, i);
-            _pushBtnBehavioursDict[2][i] = pushBtnsBehaviours[i];
+            pushBtnsBehaviours[i].Init(2, pushBtnsBehaviours.Length - 1 - i);
+            _pushBtnBehavioursDict[2][pushBtnsBehaviours.Length - 1 - i] = pushBtnsBehaviours[i];
         }
         
         pushBtnsBehaviours = pushRowUpParent.GetComponentsInChildren<PushBtnBehaviour>();

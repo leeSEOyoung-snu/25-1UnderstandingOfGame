@@ -8,6 +8,8 @@ public class PushBtnBehaviour : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI buttonText;
     [SerializeField] private Button pushButton;
+    [SerializeField] private Image buttonImg;
+    [SerializeField] private Sprite originalSprite, disabledSprite;
     
     private enum PushDirectionType
     {
@@ -27,8 +29,9 @@ public class PushBtnBehaviour : MonoBehaviour
         _pushDirection = (PushDirectionType)pushDirection;
         _id = id;
         _disabledTurn = 0;
-        buttonText.text = "0";
+        buttonText.text = "";
         pushButton.interactable = true;
+        buttonImg.sprite = originalSprite;
     }
 
     public void PushBtnClicked()
@@ -41,6 +44,7 @@ public class PushBtnBehaviour : MonoBehaviour
         _disabledTurn = turn+1;
         pushButton.interactable = false;
         buttonText.text = turn.ToString();
+        buttonImg.sprite = disabledSprite;
     }
 
     public void UpdateDisabled()
@@ -48,6 +52,11 @@ public class PushBtnBehaviour : MonoBehaviour
         if (_disabledTurn == 0) return;
         _disabledTurn--;
         buttonText.text = _disabledTurn.ToString();
-        if (_disabledTurn == 0) pushButton.interactable = true;
+        if (_disabledTurn == 0)
+        {
+            pushButton.interactable = true;
+            buttonText.text = "";
+            buttonImg.sprite = originalSprite;
+        }
     }
 }

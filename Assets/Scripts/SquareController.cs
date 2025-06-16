@@ -17,7 +17,7 @@ public class SquareController : MonoBehaviour
     
     [Header("Sprites")]
     [SerializeField] private Sprite[] iconSprites;
-    [SerializeField] private Sprite[] makeSprites;
+    [SerializeField] private Sprite[] markSprites;
     public Sprite NumberSprite { get; private set; }
     
     private readonly Vector3 _openedRot = new Vector3(0, 180, 0);
@@ -131,23 +131,31 @@ public class SquareController : MonoBehaviour
         {
             case SquareStateType.Empty:
                 State = player == 0 ? SquareStateType.ZombieOccupied : SquareStateType.VaccineOccupied;
-                // MovingSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
-                //     .Join(colorBottomSprite.DOColor(_playerColors[player], colorChangeDuration));
+                markSpriteRenderer.color = Color.clear;
+                markSpriteRenderer.sprite = markSprites[player];
+                MovingSequence.Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration));
                 break;
             
             case SquareStateType.ZombieReserved:
                 State = SquareStateType.ZombieOccupied;
+                MovingSequence.Append(markSpriteRenderer.DOColor(Color.clear, colorChangeDuration / 2))
+                    .AppendCallback(() => markSpriteRenderer.sprite = markSprites[0])
+                    .Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration / 2));
                 break;
             
             case SquareStateType.VaccineReserved:
                 State = SquareStateType.VaccineOccupied;
+                MovingSequence.Append(markSpriteRenderer.DOColor(Color.clear, colorChangeDuration / 2))
+                    .AppendCallback(() => markSpriteRenderer.sprite = markSprites[1])
+                    .Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration / 2));
                 break;
             
             case SquareStateType.BothReserved:
                 State = player == 0 ? SquareStateType.VaccineOccupied : SquareStateType.ZombieOccupied;
                 int occupier = Mathf.Abs(player - 1);
-                // MovingSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
-                //     .Join(colorBottomSprite.DOColor(_playerColors[occupier], colorChangeDuration));
+                MovingSequence.Append(markSpriteRenderer.DOColor(Color.clear, colorChangeDuration / 2))
+                    .AppendCallback(() => markSpriteRenderer.sprite = markSprites[occupier])
+                    .Append(markSpriteRenderer.DOColor(Color.white, colorChangeDuration / 2));
                 break;
             
             default:

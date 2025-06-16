@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class IconController : MonoBehaviour
@@ -5,10 +6,17 @@ public class IconController : MonoBehaviour
     [SerializeField] private HoveringEffect hoveringEffect;
     [SerializeField] private GameObject warningMessage;
     [SerializeField] private Transform iconParent;
+    [SerializeField] private Sprite iconSprite;
 
     private GameObject[] _icons;
     private int _currIconCnt;
-    
+    private Sprite[] _numberSprites;
+
+    private void Awake()
+    {
+        _numberSprites = Resources.LoadAll<Sprite>("Numbers");
+    }
+
     public void Init()
     {
         hoveringEffect.Init();

@@ -7,48 +7,51 @@ using UnityEngine.EventSystems;
 public class SquareController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private SpriteRenderer numberSprite;
-    [SerializeField] private SpriteRenderer colorTopSprite;
-    [SerializeField] private SpriteRenderer colorBottomSprite;
+    [SerializeField] private SpriteRenderer numberSpriteRenderer;
+    [SerializeField] private SpriteRenderer markSpriteRenderer;
     
     [Header("Values")]
     [SerializeField] private float moveAnimationPosZ;
     [SerializeField] private float openAnimationDuration, colorChangeDuration;
     [SerializeField] private float moveAnimationDuration, moveZAxisAnimationDuration;
     
-    private Vector3 _openedRot = new Vector3(0, 180, 0);
-
-    private Color[] _playerColors = new Color[2];
+    [Header("Sprites")]
+    [SerializeField] private Sprite[] iconSprites;
+    [SerializeField] private Sprite[] makeSprites;
+    public Sprite NumberSprite { get; private set; }
+    
+    private readonly Vector3 _openedRot = new Vector3(0, 180, 0);
     
     public Sequence MovingSequence { get; private set; }
 
     public enum SquareStateType
     {
         Empty,
-        KingReserved,
-        QueenReserved,
+        ZombieReserved,
+        VaccineReserved,
         BothReserved,
-        KingOccupied,
-        QueenOccupied,
+        ZombieOccupied,
+        VaccineOccupied,
     }
     
     public bool IsOpened { get; private set; }
     public bool IsReadyToReserve { get; private set; }
     public SquareStateType State { get; private set; }
 
-    public void Init(Sprite number, Color kingColor, Color queenColor, Vector3 initPos)
+    private readonly Vector3 _numberScale = new Vector3(0.07f, 0.07f, 1f), _iconScale = new Vector3(0.08f, 0.08f, 1f);
+
+    public void Init(Sprite number, Vector3 initPos)
     {
         IsOpened = false;
         IsReadyToReserve = false;
         transform.rotation = Quaternion.identity;
         State = SquareStateType.Empty;
         transform.position = initPos;
-        numberSprite.sprite = number;
-        _playerColors[0] = kingColor;
-        _playerColors[1] = queenColor;
-        numberSprite.color = Color.white;
-        colorTopSprite.color = Color.clear;
-        colorBottomSprite.color = Color.clear;
+        numberSpriteRenderer.sprite = number;
+
+        NumberSprite = number;
+        numberSpriteRenderer.gameObject.transform.localScale = _numberScale;
+        markSpriteRenderer.sprite = null;
     }
 
     private void OnMouseDown()
@@ -62,12 +65,14 @@ public class SquareController : MonoBehaviour
         if (IsReadyToReserve)
         {
             IsReadyToReserve = false;
-            numberSprite.color = Color.white;
+            numberSpriteRenderer.sprite = NumberSprite;
+            numberSpriteRenderer.gameObject.transform.localScale = _numberScale;
         }
         else
         {
             IsReadyToReserve = true;
-            numberSprite.color = _playerColors[player];
+            numberSpriteRenderer.sprite = iconSprites[player];
+            numberSpriteRenderer.gameObject.transform.localScale = _iconScale;
         }
     }
 
@@ -75,35 +80,33 @@ public class SquareController : MonoBehaviour
     {
         switch (player)
         {
-            case 0: // King
+            case 0: // Zombie
                 if (State != SquareStateType.Empty)
                 {
                     Debug.LogError($"이상한 reserve: " + State);
                     return;
                 }
 
-                State = SquareStateType.KingReserved;
-                colorTopSprite.color = _playerColors[player];
-                colorBottomSprite.color = _playerColors[player];
+                State = SquareStateType.ZombieReserved;
+                markSpriteRenderer.sprite = iconSprites[0];
                 break;
             
-            case 1: // Queen
+            case 1: // Vaccine
                 if (State == SquareStateType.Empty)
                 {
-                    State = SquareStateType.QueenReserved;
-                    colorTopSprite.color = _playerColors[player];
+                    State = SquareStateType.VaccineReserved;
+                    markSpriteRenderer.sprite = iconSprites[1];
                 }
-                else if (State == SquareStateType.KingReserved)
+                else if (State == SquareStateType.ZombieReserved)
                 {
                     State = SquareStateType.BothReserved;
+                    markSpriteRenderer.sprite = iconSprites[2];
                 }
                 else
                 {
                     Debug.LogError($"이상한 reserve: " + State);
                     return;
                 }
-                
-                colorBottomSprite.color = _playerColors[player];
                 break;
             
             default:
@@ -112,7 +115,8 @@ public class SquareController : MonoBehaviour
         }
 
         IsReadyToReserve = false;
-        numberSprite.color = Color.white;
+        numberSpriteRenderer.sprite = NumberSprite;
+        numberSpriteRenderer.gameObject.transform.localScale = _numberScale;
     }
 
     public void Open(int player)
@@ -126,24 +130,24 @@ public class SquareController : MonoBehaviour
         switch (State)
         {
             case SquareStateType.Empty:
-                State = player == 0 ? SquareStateType.KingOccupied : SquareStateType.QueenOccupied;
-                MovingSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
-                    .Join(colorBottomSprite.DOColor(_playerColors[player], colorChangeDuration));
+                State = player == 0 ? SquareStateType.ZombieOccupied : SquareStateType.VaccineOccupied;
+                // MovingSequence.Append(colorTopSprite.DOColor(_playerColors[player], colorChangeDuration))
+                //     .Join(colorBottomSprite.DOColor(_playerColors[player], colorChangeDuration));
                 break;
             
-            case SquareStateType.KingReserved:
-                State = SquareStateType.KingOccupied;
+            case SquareStateType.ZombieReserved:
+                State = SquareStateType.ZombieOccupied;
                 break;
             
-            case SquareStateType.QueenReserved:
-                State = SquareStateType.QueenOccupied;
+            case SquareStateType.VaccineReserved:
+                State = SquareStateType.VaccineOccupied;
                 break;
             
             case SquareStateType.BothReserved:
-                State = player == 0 ? SquareStateType.QueenOccupied : SquareStateType.KingOccupied;
+                State = player == 0 ? SquareStateType.VaccineOccupied : SquareStateType.ZombieOccupied;
                 int occupier = Mathf.Abs(player - 1);
-                MovingSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
-                    .Join(colorBottomSprite.DOColor(_playerColors[occupier], colorChangeDuration));
+                // MovingSequence.Append(colorTopSprite.DOColor(_playerColors[occupier], colorChangeDuration))
+                //     .Join(colorBottomSprite.DOColor(_playerColors[occupier], colorChangeDuration));
                 break;
             
             default:

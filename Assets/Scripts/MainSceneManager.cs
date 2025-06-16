@@ -90,7 +90,7 @@ public class MainSceneManager : MonoBehaviour
                 float initPosX = ((float)_squareLength*-1 + 2*x + 1) * _squareHalfSize;
                 float initPosY = ((float)_squareLength - 2*y - 1) * _squareHalfSize;
                 Vector3 initPos = new Vector3(initPosX, initPosY, 0);
-                squaresControllers[y].Init(_numberSprites[id], zombieColor, vaccineColor, initPos);
+                squaresControllers[y].Init(_numberSprites[id], initPos);
                 _squareControllerDict[x].Add(y, squaresControllers[y]);
             }
         }
@@ -234,13 +234,13 @@ public class MainSceneManager : MonoBehaviour
             {
                 switch (_squareControllerDict[x][y].State)
                 {
-                    case SquareController.SquareStateType.KingOccupied:
+                    case SquareController.SquareStateType.ZombieOccupied:
                         if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
                         currVaccineCnt = 0;
                         currZombieCnt++;
                         break;
                     
-                    case SquareController.SquareStateType.QueenOccupied:
+                    case SquareController.SquareStateType.VaccineOccupied:
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currZombieCnt = 0;
                         currVaccineCnt++;
@@ -274,13 +274,13 @@ public class MainSceneManager : MonoBehaviour
             {
                 switch (_squareControllerDict[x][y].State)
                 {
-                    case SquareController.SquareStateType.KingOccupied:
+                    case SquareController.SquareStateType.ZombieOccupied:
                         if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
                         currVaccineCnt = 0;
                         currZombieCnt++;
                         break;
                     
-                    case SquareController.SquareStateType.QueenOccupied:
+                    case SquareController.SquareStateType.VaccineOccupied:
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currZombieCnt = 0;
                         currVaccineCnt++;
@@ -314,13 +314,13 @@ public class MainSceneManager : MonoBehaviour
             {
                 switch (_squareControllerDict[x+i][i].State)
                 {
-                    case SquareController.SquareStateType.KingOccupied:
+                    case SquareController.SquareStateType.ZombieOccupied:
                         if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
                         currVaccineCnt = 0;
                         currZombieCnt++;
                         break;
                     
-                    case SquareController.SquareStateType.QueenOccupied:
+                    case SquareController.SquareStateType.VaccineOccupied:
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currZombieCnt = 0;
                         currVaccineCnt++;
@@ -351,13 +351,13 @@ public class MainSceneManager : MonoBehaviour
             {
                 switch (_squareControllerDict[i][y+i].State)
                 {
-                    case SquareController.SquareStateType.KingOccupied:
+                    case SquareController.SquareStateType.ZombieOccupied:
                         if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
                         currVaccineCnt = 0;
                         currZombieCnt++;
                         break;
                     
-                    case SquareController.SquareStateType.QueenOccupied:
+                    case SquareController.SquareStateType.VaccineOccupied:
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currZombieCnt = 0;
                         currVaccineCnt++;
@@ -391,13 +391,13 @@ public class MainSceneManager : MonoBehaviour
             {
                 switch (_squareControllerDict[x-i][i].State)
                 {
-                    case SquareController.SquareStateType.KingOccupied:
+                    case SquareController.SquareStateType.ZombieOccupied:
                         if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
                         currVaccineCnt = 0;
                         currZombieCnt++;
                         break;
                     
-                    case SquareController.SquareStateType.QueenOccupied:
+                    case SquareController.SquareStateType.VaccineOccupied:
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currZombieCnt = 0;
                         currVaccineCnt++;
@@ -428,13 +428,13 @@ public class MainSceneManager : MonoBehaviour
             {
                 switch (_squareControllerDict[i][y-i].State)
                 {
-                    case SquareController.SquareStateType.KingOccupied:
+                    case SquareController.SquareStateType.ZombieOccupied:
                         if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
                         currVaccineCnt = 0;
                         currZombieCnt++;
                         break;
                     
-                    case SquareController.SquareStateType.QueenOccupied:
+                    case SquareController.SquareStateType.VaccineOccupied:
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currZombieCnt = 0;
                         currVaccineCnt++;

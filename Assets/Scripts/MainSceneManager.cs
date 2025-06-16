@@ -223,7 +223,6 @@ public class MainSceneManager : MonoBehaviour
 
     private bool CheckWinner()
     {
-        bool isDraw = true;
         int maxZombieCnt = 0, maxVaccineCnt = 0;
         int currZombieCnt = 0, currVaccineCnt = 0;
         
@@ -251,7 +250,6 @@ public class MainSceneManager : MonoBehaviour
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currVaccineCnt = 0;
                         currZombieCnt = 0;
-                        isDraw = false;
                         break;
                 }
             }
@@ -264,8 +262,6 @@ public class MainSceneManager : MonoBehaviour
         // Debug.Log($"세로 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 가로 방향 체크
-        currZombieCnt = 0;
-        currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
         {
             for (int x = 0; x < _squareLength; x++)
@@ -288,7 +284,6 @@ public class MainSceneManager : MonoBehaviour
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currVaccineCnt = 0;
                         currZombieCnt = 0;
-                        isDraw = false;
                         break;
                 }
                 // Debug.Log($"square state: {_squareControllerDict[x][y].State}, maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
@@ -302,8 +297,6 @@ public class MainSceneManager : MonoBehaviour
         // Debug.Log($"가로 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 우하향 대각선 체크
-        currZombieCnt = 0;
-        currVaccineCnt = 0;
         for (int x = 0; x < _squareLength; x++)
         {
             for (int i = 0; i < _squareLength - x; i++)
@@ -327,7 +320,6 @@ public class MainSceneManager : MonoBehaviour
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currVaccineCnt = 0;
                         currZombieCnt = 0;
-                        isDraw = false;
                         break;
                 }
             }
@@ -337,8 +329,6 @@ public class MainSceneManager : MonoBehaviour
             currVaccineCnt = 0;
         }
         
-        currZombieCnt = 0;
-        currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
         {
             for (int i = 0; i < _squareLength - y; i++)
@@ -362,7 +352,6 @@ public class MainSceneManager : MonoBehaviour
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currVaccineCnt = 0;
                         currZombieCnt = 0;
-                        isDraw = false;
                         break;
                 }
             }
@@ -375,8 +364,6 @@ public class MainSceneManager : MonoBehaviour
         // Debug.Log($"우하향 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 우상향 대각선 체크
-        currZombieCnt = 0;
-        currVaccineCnt = 0;
         for (int x = 0; x < _squareLength; x++)
         {
             for (int i = 0; i < x+1; i++)
@@ -400,7 +387,6 @@ public class MainSceneManager : MonoBehaviour
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currVaccineCnt = 0;
                         currZombieCnt = 0;
-                        isDraw = false;
                         break;
                 }
             }
@@ -410,8 +396,6 @@ public class MainSceneManager : MonoBehaviour
             currVaccineCnt = 0;
         }
         
-        currZombieCnt = 0;
-        currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
         {
             for (int i = 0; i < y+1; i++)
@@ -435,7 +419,6 @@ public class MainSceneManager : MonoBehaviour
                         if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
                         currVaccineCnt = 0;
                         currZombieCnt = 0;
-                        isDraw = false;
                         break;
                 }
             }
@@ -447,9 +430,9 @@ public class MainSceneManager : MonoBehaviour
         
         Debug.Log($"maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
-        if (maxZombieCnt >= winCondition) _currState = GameStateType.ZombieWin;
+        if (maxZombieCnt >= winCondition && maxVaccineCnt >= winCondition) _currState = GameStateType.Draw; 
+        else if (maxZombieCnt >= winCondition) _currState = GameStateType.ZombieWin;
         else if (maxVaccineCnt >= winCondition) _currState = GameStateType.VaccineWin;
-        else if (isDraw) _currState = GameStateType.Draw; 
         else return false;
         
         EndGame();

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,16 +8,17 @@ public class MainSceneManager : MonoBehaviour
     
     [Header("References")] 
     [SerializeField] private Transform[] columns;
-    [SerializeField] private GameObject kingReserveBtn, queenReserveBtn;
+    [SerializeField] private IconController zombieIconController, vaccineIconController;
     [SerializeField] private GameObject pushColumnDownParent, pushColumnUpParent, pushRowDownParent, pushRowUpParent;
     [SerializeField] private GameObject endingPanel;
     [SerializeField] private TextMeshProUGUI endingText;
-    [SerializeField] private GameObject kingTurn, queenTurn;
+    [SerializeField] private GameObject zombieTurn, vaccineTurn;
     
     [Header("Values")] 
+    [SerializeField] private float squareOffset;
     [SerializeField] private int reservedSquareCnt;
     [SerializeField] private int winCondition;
-    [SerializeField] private Color kingColor, queenColor;
+    [SerializeField] private Color zombieColor, vaccineColor;
     [SerializeField] private int disablePushBtnTurn;
 
     private Dictionary<int, Dictionary<int, SquareController>> _squareControllerDict;
@@ -32,16 +32,16 @@ public class MainSceneManager : MonoBehaviour
 
     private enum PlayerType
     {
-        King = 0,
-        Queen = 1,
+        Zombie = 0,
+        Vaccine = 1,
     }
 
     private enum GameStateType
     {
         Reserve,
         Playing,
-        KingWin,
-        QueenWin,
+        ZombieWin,
+        VaccineWin,
         Draw,
     }
 
@@ -65,18 +65,18 @@ public class MainSceneManager : MonoBehaviour
     {
         isMoving = false;
         
-        _currTurn = PlayerType.King;
+        _currTurn = PlayerType.Zombie;
         _currState = GameStateType.Reserve;
         _numberSprites = Resources.LoadAll<Sprite>("Numbers");
         endingPanel.SetActive(false);
         
-        kingTurn.SetActive(false);
-        queenTurn.SetActive(false);
+        zombieTurn.SetActive(false);
+        vaccineTurn.SetActive(false);
         
         // square controller 및 square 위치 초기화
         _squareControllerDict = new Dictionary<int, Dictionary<int, SquareController>>();
         _squareLength = columns.Length;
-        _squareHalfSize = columns[0].GetChild(0).transform.localScale.x / 2;
+        _squareHalfSize = columns[0].GetChild(0).transform.localScale.x / 2 + squareOffset;
         
         for (int x = 0; x < _squareLength; x++)
         {
@@ -90,15 +90,16 @@ public class MainSceneManager : MonoBehaviour
                 float initPosX = ((float)_squareLength*-1 + 2*x + 1) * _squareHalfSize;
                 float initPosY = ((float)_squareLength - 2*y - 1) * _squareHalfSize;
                 Vector3 initPos = new Vector3(initPosX, initPosY, 0);
-                squaresControllers[y].Init(_numberSprites[id], kingColor, queenColor, initPos);
+                squaresControllers[y].Init(_numberSprites[id], zombieColor, vaccineColor, initPos);
                 _squareControllerDict[x].Add(y, squaresControllers[y]);
             }
         }
         
         // Reserve 초기화
         _readyToReserveCnt = 0;
-        kingReserveBtn.gameObject.SetActive(true);
-        queenReserveBtn.gameObject.SetActive(false);
+        zombieIconController.Init();
+        zombieIconController.ReadyToReserve();
+        vaccineIconController.Init();
         
         // Push 초기화
         pushColumnDownParent.SetActive(false);
@@ -154,17 +155,17 @@ public class MainSceneManager : MonoBehaviour
                 bool isGameEnded = CheckWinner();
                 if (!isGameEnded)
                 {
-                    if (_currTurn == PlayerType.King)
+                    if (_currTurn == PlayerType.Zombie)
                     {
-                        _currTurn = PlayerType.Queen;
-                        kingTurn.SetActive(false);
-                        queenTurn.SetActive(true);
+                        _currTurn = PlayerType.Vaccine;
+                        zombieTurn.SetActive(false);
+                        vaccineTurn.SetActive(true);
                     }
-                    else if (_currTurn == PlayerType.Queen)
+                    else if (_currTurn == PlayerType.Vaccine)
                     {
-                        _currTurn = PlayerType.King;
-                        kingTurn.SetActive(true);
-                        queenTurn.SetActive(false);
+                        _currTurn = PlayerType.Zombie;
+                        zombieTurn.SetActive(true);
+                        vaccineTurn.SetActive(false);
                     }
 
                     foreach (var pair1 in _pushBtnBehavioursDict)
@@ -177,34 +178,41 @@ public class MainSceneManager : MonoBehaviour
 
     public void ReserveSquare()
     {
-        if (_readyToReserveCnt != reservedSquareCnt) return;
-        
-        if (_currTurn == PlayerType.King)
+        if (_currTurn == PlayerType.Zombie)
         {
+            if (_readyToReserveCnt != reservedSquareCnt)
+            {
+                zombieIconController.ShowWarningMessage();
+                return;
+            }
             for (int x = 0; x < _squareLength; x++)
             for (int y = 0; y < _squareLength; y++)
                 if (_squareControllerDict[x][y].IsReadyToReserve)
                     _squareControllerDict[x][y].Reserve(0);
 
             _readyToReserveCnt = 0;
-            _currTurn = PlayerType.Queen;
-            kingReserveBtn.gameObject.SetActive(false);
-            queenReserveBtn.gameObject.SetActive(true);
+            _currTurn = PlayerType.Vaccine;
+            zombieIconController.EndReserve();
+            vaccineIconController.ReadyToReserve();
         }
-        else if (_currTurn == PlayerType.Queen)
+        else if (_currTurn == PlayerType.Vaccine)
         {
+            if (_readyToReserveCnt != reservedSquareCnt)
+            {
+                vaccineIconController.ShowWarningMessage();
+                return;
+            }
             for (int x = 0; x < _squareLength; x++)
             for (int y = 0; y < _squareLength; y++)
                 if (_squareControllerDict[x][y].IsReadyToReserve)
                     _squareControllerDict[x][y].Reserve(1);
             
             _readyToReserveCnt = 0;
-            _currTurn = PlayerType.King;
-            kingTurn.SetActive(true);
-            queenTurn.SetActive(false);
+            _currTurn = PlayerType.Zombie;
+            zombieTurn.SetActive(true);
+            vaccineTurn.SetActive(false);
             _currState = GameStateType.Playing;
-            kingReserveBtn.gameObject.SetActive(false);
-            queenReserveBtn.gameObject.SetActive(false);
+            vaccineIconController.EndReserve();
             
             pushColumnDownParent.SetActive(true);
             pushColumnUpParent.SetActive(true);
@@ -216,8 +224,8 @@ public class MainSceneManager : MonoBehaviour
     private bool CheckWinner()
     {
         bool isDraw = true;
-        int maxKingCnt = 0, maxQueenCnt = 0;
-        int currKingCnt = 0, currQueenCnt = 0;
+        int maxZombieCnt = 0, maxVaccineCnt = 0;
+        int currZombieCnt = 0, currVaccineCnt = 0;
         
         // 세로 방향 체크
         for (int x = 0; x < _squareLength; x++)
@@ -227,39 +235,39 @@ public class MainSceneManager : MonoBehaviour
                 switch (_squareControllerDict[x][y].State)
                 {
                     case SquareController.SquareStateType.KingOccupied:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        currQueenCnt = 0;
-                        currKingCnt++;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt++;
                         break;
                     
                     case SquareController.SquareStateType.QueenOccupied:
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currKingCnt = 0;
-                        currQueenCnt++;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currZombieCnt = 0;
+                        currVaccineCnt++;
                         break;
                     
                     default:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currQueenCnt = 0;
-                        currKingCnt = 0;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt = 0;
                         isDraw = false;
                         break;
                 }
             }
-            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-            currKingCnt = 0;
-            currQueenCnt = 0;
+            if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+            if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+            currZombieCnt = 0;
+            currVaccineCnt = 0;
         }
         
-        // Debug.Log($"세로 체크 - maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        // Debug.Log($"세로 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 가로 방향 체크
-        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-        currKingCnt = 0;
-        currQueenCnt = 0;
+        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+        currZombieCnt = 0;
+        currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
         {
             for (int x = 0; x < _squareLength; x++)
@@ -267,39 +275,39 @@ public class MainSceneManager : MonoBehaviour
                 switch (_squareControllerDict[x][y].State)
                 {
                     case SquareController.SquareStateType.KingOccupied:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        currQueenCnt = 0;
-                        currKingCnt++;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt++;
                         break;
                     
                     case SquareController.SquareStateType.QueenOccupied:
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currKingCnt = 0;
-                        currQueenCnt++;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currZombieCnt = 0;
+                        currVaccineCnt++;
                         break;
                     default:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currQueenCnt = 0;
-                        currKingCnt = 0;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt = 0;
                         isDraw = false;
                         break;
                 }
-                // Debug.Log($"square state: {_squareControllerDict[x][y].State}, maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+                // Debug.Log($"square state: {_squareControllerDict[x][y].State}, maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
             }
-            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-            currKingCnt = 0;
-            currQueenCnt = 0;
+            if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+            if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+            currZombieCnt = 0;
+            currVaccineCnt = 0;
         }
         
-        // Debug.Log($"가로 체크 - maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        // Debug.Log($"가로 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 우하향 대각선 체크
-        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-        currKingCnt = 0;
-        currQueenCnt = 0;
+        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+        currZombieCnt = 0;
+        currVaccineCnt = 0;
         for (int x = 0; x < _squareLength; x++)
         {
             for (int i = 0; i < _squareLength - x; i++)
@@ -307,36 +315,36 @@ public class MainSceneManager : MonoBehaviour
                 switch (_squareControllerDict[x+i][i].State)
                 {
                     case SquareController.SquareStateType.KingOccupied:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        currQueenCnt = 0;
-                        currKingCnt++;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt++;
                         break;
                     
                     case SquareController.SquareStateType.QueenOccupied:
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currKingCnt = 0;
-                        currQueenCnt++;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currZombieCnt = 0;
+                        currVaccineCnt++;
                         break;
                     
                     default:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currQueenCnt = 0;
-                        currKingCnt = 0;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt = 0;
                         isDraw = false;
                         break;
                 }
             }
-            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-            currKingCnt = 0;
-            currQueenCnt = 0;
+            if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+            if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+            currZombieCnt = 0;
+            currVaccineCnt = 0;
         }
         
-        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-        currKingCnt = 0;
-        currQueenCnt = 0;
+        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+        currZombieCnt = 0;
+        currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
         {
             for (int i = 0; i < _squareLength - y; i++)
@@ -344,39 +352,39 @@ public class MainSceneManager : MonoBehaviour
                 switch (_squareControllerDict[i][y+i].State)
                 {
                     case SquareController.SquareStateType.KingOccupied:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        currQueenCnt = 0;
-                        currKingCnt++;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt++;
                         break;
                     
                     case SquareController.SquareStateType.QueenOccupied:
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currKingCnt = 0;
-                        currQueenCnt++;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currZombieCnt = 0;
+                        currVaccineCnt++;
                         break;
                     
                     default:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currQueenCnt = 0;
-                        currKingCnt = 0;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt = 0;
                         isDraw = false;
                         break;
                 }
             }
-            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-            currKingCnt = 0;
-            currQueenCnt = 0;
+            if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+            if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+            currZombieCnt = 0;
+            currVaccineCnt = 0;
         }
         
-        // Debug.Log($"우하향 체크 - maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        // Debug.Log($"우하향 체크 - maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
         // 우상향 대각선 체크
-        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-        currKingCnt = 0;
-        currQueenCnt = 0;
+        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+        currZombieCnt = 0;
+        currVaccineCnt = 0;
         for (int x = 0; x < _squareLength; x++)
         {
             for (int i = 0; i < x+1; i++)
@@ -384,36 +392,36 @@ public class MainSceneManager : MonoBehaviour
                 switch (_squareControllerDict[x-i][i].State)
                 {
                     case SquareController.SquareStateType.KingOccupied:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        currQueenCnt = 0;
-                        currKingCnt++;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt++;
                         break;
                     
                     case SquareController.SquareStateType.QueenOccupied:
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currKingCnt = 0;
-                        currQueenCnt++;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currZombieCnt = 0;
+                        currVaccineCnt++;
                         break;
                     
                     default:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currQueenCnt = 0;
-                        currKingCnt = 0;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt = 0;
                         isDraw = false;
                         break;
                 }
             }
-            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-            currKingCnt = 0;
-            currQueenCnt = 0;
+            if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+            if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+            currZombieCnt = 0;
+            currVaccineCnt = 0;
         }
         
-        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-        currKingCnt = 0;
-        currQueenCnt = 0;
+        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+        currZombieCnt = 0;
+        currVaccineCnt = 0;
         for (int y = 0; y < _squareLength; y++)
         {
             for (int i = 0; i < y+1; i++)
@@ -421,36 +429,36 @@ public class MainSceneManager : MonoBehaviour
                 switch (_squareControllerDict[i][y-i].State)
                 {
                     case SquareController.SquareStateType.KingOccupied:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        currQueenCnt = 0;
-                        currKingCnt++;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt++;
                         break;
                     
                     case SquareController.SquareStateType.QueenOccupied:
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currKingCnt = 0;
-                        currQueenCnt++;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currZombieCnt = 0;
+                        currVaccineCnt++;
                         break;
                     
                     default:
-                        if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-                        if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-                        currQueenCnt = 0;
-                        currKingCnt = 0;
+                        if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+                        if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+                        currVaccineCnt = 0;
+                        currZombieCnt = 0;
                         isDraw = false;
                         break;
                 }
             }
-            if (maxQueenCnt < currQueenCnt) maxQueenCnt = currQueenCnt;
-            if (maxKingCnt < currKingCnt) maxKingCnt = currKingCnt;
-            currKingCnt = 0;
-            currQueenCnt = 0;
+            if (maxVaccineCnt < currVaccineCnt) maxVaccineCnt = currVaccineCnt;
+            if (maxZombieCnt < currZombieCnt) maxZombieCnt = currZombieCnt;
+            currZombieCnt = 0;
+            currVaccineCnt = 0;
         }
         
-        Debug.Log($"maxKing: {maxKingCnt}, maxQueen: {maxQueenCnt}");
+        Debug.Log($"maxKing: {maxZombieCnt}, maxQueen: {maxVaccineCnt}");
         
-        if (maxKingCnt >= winCondition) _currState = GameStateType.KingWin;
-        else if (maxQueenCnt >= winCondition) _currState = GameStateType.QueenWin;
+        if (maxZombieCnt >= winCondition) _currState = GameStateType.ZombieWin;
+        else if (maxVaccineCnt >= winCondition) _currState = GameStateType.VaccineWin;
         else if (isDraw) _currState = GameStateType.Draw; 
         else return false;
         
@@ -462,16 +470,16 @@ public class MainSceneManager : MonoBehaviour
     {
         switch (_currState)
         {
-            case GameStateType.KingWin:
-                endingText.text = "King Win!";
+            case GameStateType.ZombieWin:
+                endingText.text = "좀비 승리!";
                 break;
             
-            case GameStateType.QueenWin:
-                endingText.text = "Queen Win!";
+            case GameStateType.VaccineWin:
+                endingText.text = "인간 승리!";
                 break;
             
             case GameStateType.Draw:
-                endingText.text = "Draw";
+                endingText.text = "무승부";
                 break;
             
             default:
@@ -487,17 +495,27 @@ public class MainSceneManager : MonoBehaviour
         switch (_currState)
         {
             case GameStateType.Reserve:
-                if(squareController.IsReadyToReserve) _readyToReserveCnt--;
+                if(squareController.IsReadyToReserve)
+                {
+                    if (_currTurn == PlayerType.Zombie) zombieIconController.AddIcon();
+                    else if (_currTurn == PlayerType.Vaccine) vaccineIconController.AddIcon();
+                    _readyToReserveCnt--;
+                }
                 else if (_readyToReserveCnt >= reservedSquareCnt) return;
-                else _readyToReserveCnt++;
+                else
+                {
+                    if (_currTurn == PlayerType.Zombie) zombieIconController.RemoveIcon();
+                    else if (_currTurn == PlayerType.Vaccine) vaccineIconController.RemoveIcon();
+                    _readyToReserveCnt++;
+                }
                 
-                squareController.ToggleReadyToReserve(_currTurn == PlayerType.King ? 0 : 1);
+                squareController.ToggleReadyToReserve(_currTurn == PlayerType.Zombie ? 0 : 1);
                 break;
             
             case GameStateType.Playing:
                 if (isMoving) return;
                 isMoving = true;
-                squareController.Open(_currTurn == PlayerType.King ? 0 : 1);
+                squareController.Open(_currTurn == PlayerType.Zombie ? 0 : 1);
                 RunGame();
                 break;
         }

@@ -183,6 +183,7 @@ public class MainSceneManager : MonoBehaviour
             if (_readyToReserveCnt != reservedSquareCnt)
             {
                 zombieIconController.ShowWarningMessage();
+                AudioManager.PlaySfx(8);
                 return;
             }
             for (int x = 0; x < _squareLength; x++)
@@ -200,6 +201,7 @@ public class MainSceneManager : MonoBehaviour
             if (_readyToReserveCnt != reservedSquareCnt)
             {
                 vaccineIconController.ShowWarningMessage();
+                AudioManager.PlaySfx(8);
                 return;
             }
             for (int x = 0; x < _squareLength; x++)
@@ -219,6 +221,8 @@ public class MainSceneManager : MonoBehaviour
             pushRowDownParent.SetActive(true);
             pushRowUpParent.SetActive(true);
         }
+        
+        AudioManager.PlaySfx(9);
     }
 
     private bool CheckWinner()
@@ -455,6 +459,7 @@ public class MainSceneManager : MonoBehaviour
             
             case GameStateType.Draw:
                 endingText.text = "무승부";
+                AudioManager.PlaySfx(11);
                 break;
             
             default:
@@ -566,6 +571,8 @@ public class MainSceneManager : MonoBehaviour
                 _pushBtnBehavioursDict[2][id].MakeDisabled(disablePushBtnTurn);
                 break;
         }
+        
+        AudioManager.PlaySfx(10);
     }
 
     public void PushEnded()

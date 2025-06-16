@@ -181,7 +181,8 @@ public class SquareController : MonoBehaviour
             MovingSequence.Append(transform.DOMove(milestone1, moveAnimationDuration));
             MovingSequence.Append(transform.DOMove(newPos, moveZAxisAnimationDuration));
             // MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.isMoving=false);
-            MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.RunGame());
+            // MovingSequence.OnComplete(()=>MainSceneManager.Instance.RunGame());
+            MovingSequence.Play().OnComplete(()=>MainSceneManager.Instance.PushEnded());
         }
         else
         {

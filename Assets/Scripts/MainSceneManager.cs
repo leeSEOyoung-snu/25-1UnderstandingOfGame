@@ -144,7 +144,7 @@ public class MainSceneManager : MonoBehaviour
 
     public void RunGame()
     {
-        isMoving = false;
+        // isMoving = false;
         switch (_currState)
         {
             case GameStateType.Reserve:
@@ -564,6 +564,10 @@ public class MainSceneManager : MonoBehaviour
                 break;
         }
     }
-    
-    
+
+    public void PushEnded()
+    {
+        isMoving = false;
+        RunGame();
+    }
 }

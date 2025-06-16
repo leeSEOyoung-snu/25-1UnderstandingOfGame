@@ -248,11 +248,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberSpriteRenderer: {fileID: 2732520885614049883}
   markSpriteRenderer: {fileID: 2716344176456136568}
-  moveAnimationPosZ: 1
-  openAnimationDuration: 1
-  colorChangeDuration: 1
-  moveAnimationDuration: 1
-  moveZAxisAnimationDuration: 1
+  moveAnimationPosZ: -1
+  openAnimationDuration: 0.7
+  colorChangeDuration: 0.7
+  moveAnimationDuration: 0.7
+  moveZAxisAnimationDuration: 0.01
   iconSprites:
   - {fileID: -1253994506, guid: 656d545fd85d59d44bf9cfec04eae12f, type: 3}
   - {fileID: -361629868, guid: 3f20cafb9f9fa334d9d6490fe3eb407f, type: 3}

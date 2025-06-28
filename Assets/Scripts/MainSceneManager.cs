@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainSceneManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class MainSceneManager : MonoBehaviour
     [SerializeField] private GameObject endingPanel;
     [SerializeField] private TextMeshProUGUI endingText;
     [SerializeField] private GameObject zombieTurn, vaccineTurn;
+    [SerializeField] private Button resetBtn;
     
     [Header("Values")] 
     [SerializeField] private float squareOffset;
@@ -72,6 +74,8 @@ public class MainSceneManager : MonoBehaviour
         
         zombieTurn.SetActive(false);
         vaccineTurn.SetActive(false);
+        
+        resetBtn.interactable = true;
         
         // square controller 및 square 위치 초기화
         _squareControllerDict = new Dictionary<int, Dictionary<int, SquareController>>();
@@ -144,7 +148,6 @@ public class MainSceneManager : MonoBehaviour
 
     public void RunGame()
     {
-        // isMoving = false;
         switch (_currState)
         {
             case GameStateType.Reserve:
@@ -445,6 +448,7 @@ public class MainSceneManager : MonoBehaviour
 
     private void EndGame()
     {
+        resetBtn.interactable = false;
         switch (_currState)
         {
             case GameStateType.ZombieWin:
